@@ -255,6 +255,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
         <span class="pick"><select id="from-m" aria-label="From month"></select><select id="from-y" aria-label="From year"></select></span>
         <label for="to-m">to</label>
         <span class="pick"><select id="to-m" aria-label="To month"></select><select id="to-y" aria-label="To year"></select></span>
+        <span class="note avail"></span>
       </div>
       <div class="quick" id="quick">
         <button class="btn" type="button" data-q="2015">Full period</button>
@@ -371,6 +372,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
       <span class="pick"><select id="m-from-m" aria-label="From month"></select><select id="m-from-y" aria-label="From year"></select></span>
       <label for="m-to-m">to</label>
       <span class="pick"><select id="m-to-m" aria-label="To month"></select><select id="m-to-y" aria-label="To year"></select></span>
+      <span class="note avail"></span>
       <span class="quick">
         <button class="btn" type="button" data-mq="2015">Full period</button>
         <button class="btn" type="button" data-mq="2y">Last 2 years</button>
@@ -426,6 +428,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
   let BANK_LIST = [], ALLB = [];
   const hidden = new Set();
   const today = new Date();
+  let LAST = new Date(); // last month with data, set once rates load
   const state = { from: null, to: null };
 
   Promise.all([
@@ -436,6 +439,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
   ]).then(([r, b, s, meta]) => {
     RATES = r.map(d => ({ date: new Date(d.date + 'T00:00:00Z'), ecb: +d.ecb_deposit_rate, boe: +d.boe_bank_rate }));
     ALLB = b.map(d => ({ ...d, period: d.period || 'FY', year: +d.year, nii: num(d.net_interest_income_m), roe: num(d.return_on_equity_pct), nim: num(d.net_interest_margin_pct), profit: num(d.net_profit_m) }));
+    LAST = RATES[RATES.length - 1].date;
     BANKS = ALLB.filter(d => d.period === 'FY');
     SOURCES = s;
     BANK_LIST = [...new Map(ALLB.map(d => [d.bank, d.country])).entries()].map(([bank, country]) => ({ bank, country }));
@@ -501,20 +505,23 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
   const startOfMonth = (y, m) => new Date(Date.UTC(y, m, 1));
   const endOfMonth = (y, m) => new Date(Date.UTC(y, m + 1, 0));
   function initControls() {
-    const y0 = START_YEAR, y1 = today.getUTCFullYear();
+    const y0 = START_YEAR, y1 = LAST.getUTCFullYear();
     const years = d3.range(y0, y1 + 1);
     ['#from-m', '#to-m'].forEach(s => { $(s).innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join(''); });
     ['#from-y', '#to-y'].forEach(s => { $(s).innerHTML = years.map(y => `<option>${y}</option>`).join(''); });
     ['#m-from-m', '#m-to-m'].forEach(s => { $(s).innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join(''); });
     ['#m-from-y', '#m-to-y'].forEach(s => { $(s).innerHTML = years.map(y => `<option>${y}</option>`).join(''); });
     ['#m-from-m', '#m-from-y', '#m-to-m', '#m-to-y'].forEach(s => $(s).addEventListener('change', () => {
+      limitMonths('#m-from-y', '#m-from-m'); limitMonths('#m-to-y', '#m-to-m');
       let f = startOfMonth(+$('#m-from-y').value, +$('#m-from-m').value), t = endOfMonth(+$('#m-to-y').value, +$('#m-to-m').value);
       if (f > t) [f, t] = [startOfMonth(t.getUTCFullYear(), t.getUTCMonth()), endOfMonth(f.getUTCFullYear(), f.getUTCMonth())];
       setModalRange(f, t, null, true);
     }));
     $$('[data-mq]').forEach(b => b.addEventListener('click', () => { const [f, t] = quickRange(b.dataset.mq); setModalRange(f, t, b.dataset.mq, true); }));
-    setRange(startOfMonth(2015, 0), endOfMonth(y1, today.getUTCMonth()), '2015');
+    $$('.avail').forEach(el => { el.textContent = `Data available: Jan ${START_YEAR} – ${d3.utcFormat('%b %Y')(LAST)}`; });
+    setRange(startOfMonth(2015, 0), endOfMonth(y1, LAST.getUTCMonth()), '2015');
     ['#from-m', '#from-y', '#to-m', '#to-y'].forEach(s => $(s).addEventListener('change', () => {
+      limitMonths('#from-y', '#from-m'); limitMonths('#to-y', '#to-m');
       let f = startOfMonth(+$('#from-y').value, +$('#from-m').value), t = endOfMonth(+$('#to-y').value, +$('#to-m').value);
       if (f > t) [f, t] = [startOfMonth(t.getUTCFullYear(), t.getUTCMonth()), endOfMonth(f.getUTCFullYear(), f.getUTCMonth())];
       setRange(f, t, null);
@@ -541,7 +548,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
       const go = () => {
         const [key, focus, title] = JUMP[el.dataset.jump];
         showTab('charts', true);
-        setRange(startOfMonth(2015, 0), endOfMonth(today.getUTCFullYear(), today.getUTCMonth()), '2015');
+        setRange(startOfMonth(2015, 0), endOfMonth(LAST.getUTCFullYear(), LAST.getUTCMonth()), '2015');
         openModal(key, focus);
         $('#m-title').textContent = title;
         $('#m-note').textContent = (key === 'nii' ? 'The headline box measures 2021 to the latest year; this chart starts in 2015 (2015 = 100). ' : '') + 'Other lines are faded; hover a name to highlight it. Change the period with the dates above or the strip below.';
@@ -550,16 +557,28 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
       el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
     });
   }
+  function limitMonths(ys, ms) {
+    const y = +$(ys).value, ly = LAST.getUTCFullYear(), lm = LAST.getUTCMonth();
+    Array.from($(ms).options).forEach(o => { o.disabled = y === ly && +o.value > lm; });
+    if (y === ly && +$(ms).value > lm) $(ms).value = lm;
+  }
+  function clampRange(f, t) {
+    const last = endOfMonth(LAST.getUTCFullYear(), LAST.getUTCMonth()), first = startOfMonth(START_YEAR, 0);
+    if (t > last) t = last; if (f < first) f = first; if (f > t) f = startOfMonth(t.getUTCFullYear(), t.getUTCMonth());
+    return [f, t];
+  }
   function quickRange(q) {
-    const ty = today.getUTCFullYear(), tm = today.getUTCMonth();
+    const ty = LAST.getUTCFullYear(), tm = LAST.getUTCMonth();
     if (q === '2y') return [startOfMonth(ty - 2, tm), endOfMonth(ty, tm)];
     if (q === 'ly') return [startOfMonth(ty - 1, 0), endOfMonth(ty - 1, 11)];
     return [startOfMonth(2015, 0), endOfMonth(ty, tm)];
   }
   function setRange(f, t, q) {
+    [f, t] = clampRange(f, t);
     state.from = f; state.to = t;
     $('#from-m').value = f.getUTCMonth(); $('#from-y').value = f.getUTCFullYear();
     $('#to-m').value = t.getUTCMonth(); $('#to-y').value = t.getUTCFullYear();
+    limitMonths('#from-y', '#from-m'); limitMonths('#to-y', '#to-m');
     $$('#quick [data-q]').forEach(b => b.setAttribute('aria-pressed', b.dataset.q === q ? 'true' : 'false'));
     drawCharts();
   }
@@ -751,9 +770,11 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
     renderLegend(); drawBrush(); drawModal();
   }));
   function setModalRange(f, t, q, fromPicker) {
+    [f, t] = clampRange(f, t);
     mFrom = f; mTo = t;
     $('#m-from-m').value = f.getUTCMonth(); $('#m-from-y').value = f.getUTCFullYear();
     $('#m-to-m').value = t.getUTCMonth(); $('#m-to-y').value = t.getUTCFullYear();
+    limitMonths('#m-from-y', '#m-from-m'); limitMonths('#m-to-y', '#m-to-m');
     $$('[data-mq]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mq === q ? 'true' : 'false'));
     drawModal();
     if (fromPicker && moveBrush) moveBrush();
@@ -767,7 +788,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
     const box = $('#m-brush'); box.innerHTML = '';
     const W = Math.max(280, box.clientWidth), H = 64, m = { l: 8, r: 8 };
     const full = mKey === 'rates'
-      ? { from: startOfMonth(START_YEAR, 0), to: new Date(Math.max(+RATES[RATES.length - 1].date, +today)) }
+      ? { from: startOfMonth(START_YEAR, 0), to: endOfMonth(LAST.getUTCFullYear(), LAST.getUTCMonth()) }
       : { from: new Date(Date.UTC(d3.min(ALLB, d => d.year), 0, 1)), to: new Date(Date.UTC(d3.max(ALLB, d => d.year), 11, 31)) };
     const series = seriesFor(mKey, full.from, full.to, mCountry);
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H).attr('class', 'brush');
