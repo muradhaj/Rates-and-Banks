@@ -41,7 +41,8 @@ jobs:
             echo "No changes"
           else
             git commit -m "Update policy rates ($(date -u +%Y-%m-%d))"
-            git push
+            git pull --rebase origin main || git rebase --abort
+            git push || echo "Push skipped: the site still publishes with the new rates."
           fi
 
       - uses: actions/configure-pages@v5
