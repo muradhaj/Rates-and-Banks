@@ -160,7 +160,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
   <div class="wrap">
     <div class="eyebrow">Interest rates and bank earnings · Netherlands vs United Kingdom</div>
     <h1>Rates &amp; Banks: NL vs UK</h1>
-    <p class="tagline">How ECB and Bank of England rate decisions shaped what eight Dutch and British banks earn. Everything runs from 2015 to today: central bank rates update daily, bank results yearly.</p>
+    <p class="tagline">How ECB and Bank of England rate decisions shaped what eight Dutch and British banks earn. Bank results cover full years 2015–<span data-k="latest">2025</span><span data-k="h1_tag"></span>; central bank rates run from 2015 and update daily.</p>
   </div>
   <div class="tabbar">
     <nav class="wrap tabs" role="tablist" aria-label="Sections">
@@ -195,10 +195,10 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
     </div>
 
     <div class="kpis">
-      <div class="card kpi" role="button" tabindex="0" data-jump="boe" aria-label="Open the Bank of England rate chart"><div class="lab"><span class="sw" style="background:var(--uk)"></span>Bank of England peak rate (2021–)</div><div class="val" data-k="boe_peak">—</div><div class="sub">First hike <span data-k="boe_first_hike">—</span> · now <span data-k="boe_now">—</span></div><div class="go">See the chart →</div></div>
-      <div class="card kpi" role="button" tabindex="0" data-jump="ecb" aria-label="Open the ECB rate chart"><div class="lab"><span class="sw" style="background:var(--nl)"></span>ECB peak deposit rate (2021–)</div><div class="val" data-k="ecb_peak">—</div><div class="sub">First hike <span data-k="ecb_first_hike">—</span> · now <span data-k="ecb_now">—</span></div><div class="go">See the chart →</div></div>
-      <div class="card kpi" role="button" tabindex="0" data-jump="uk" aria-label="Open the UK net interest income chart"><div class="lab"><span class="sw" style="background:var(--uk)"></span>UK net interest income, 2021→<span data-k="latest">—</span></div><div class="val" data-k="uk_growth">—</div><div class="sub">Average of Lloyds, NatWest, Barclays and Santander UK</div><div class="go">See the chart →</div></div>
-      <div class="card kpi" role="button" tabindex="0" data-jump="nl" aria-label="Open the Dutch net interest income chart"><div class="lab"><span class="sw" style="background:var(--nl)"></span>Dutch net interest income, 2021→<span data-k="latest">—</span></div><div class="val" data-k="nl_growth">—</div><div class="sub">Average of ING, ABN AMRO, Rabobank and de Volksbank</div><div class="go">See the chart →</div></div>
+      <div class="card kpi" role="button" tabindex="0" data-jump="boe" aria-label="Open the Bank of England rate chart"><div class="lab"><span class="sw" style="background:var(--uk)"></span>Bank of England peak since 2021</div><div class="val" data-k="boe_peak">—</div><div class="sub">First hike <span data-k="boe_first_hike">—</span> · now <span data-k="boe_now">—</span></div><div class="go">See the chart →</div></div>
+      <div class="card kpi" role="button" tabindex="0" data-jump="ecb" aria-label="Open the ECB rate chart"><div class="lab"><span class="sw" style="background:var(--nl)"></span>ECB deposit rate peak since 2021</div><div class="val" data-k="ecb_peak">—</div><div class="sub">First hike <span data-k="ecb_first_hike">—</span> · now <span data-k="ecb_now">—</span></div><div class="go">See the chart →</div></div>
+      <div class="card kpi" role="button" tabindex="0" data-jump="uk" aria-label="Open the UK net interest income chart"><div class="lab"><span class="sw" style="background:var(--uk)"></span>UK net interest income, 2021→<span data-k="latest">—</span></div><div class="val" data-k="uk_growth">—</div><div class="sub">Average of Lloyds, NatWest, Barclays and Santander UK. Full years only.</div><div class="go">See the chart →</div></div>
+      <div class="card kpi" role="button" tabindex="0" data-jump="nl" aria-label="Open the Dutch net interest income chart"><div class="lab"><span class="sw" style="background:var(--nl)"></span>Dutch net interest income, 2021→<span data-k="latest">—</span></div><div class="val" data-k="nl_growth">—</div><div class="sub">Average of ING, ABN AMRO, Rabobank and de Volksbank. Full years only.</div><div class="go">See the chart →</div></div>
     </div>
 
     <div class="section">
@@ -235,7 +235,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
           <p>NatWest, then RBS, was still clearing up after the 2008 crisis: its return on tangible equity was <span class="num" data-k="nw_2016">—</span> in 2016. By <span data-k="latest">—</span> it was <span class="num" data-k="nw_latest">—</span>, the highest of the eight banks. Barclays went the other way in the hiking cycle, from <span class="num" data-k="bc_2021">—</span> in 2021 to <span class="num" data-k="bc_latest">—</span>, even though its interest income grew the most. Costs, loan losses and business mix matter as much as rates.</p>
         </div>
         <div class="finding">
-          <div class="era">Today</div>
+          <div class="era">Latest</div>
           <h3>7. Where rates are now</h3>
           <p>The ECB last changed its deposit rate in <span class="num" data-k="ecb_last">—</span>, to <span class="num" data-k="ecb_now">—</span>. The Bank of England last moved in <span class="num" data-k="boe_last">—</span>, to <span class="num" data-k="boe_now">—</span>. UK rates are <span class="num" data-k="gap_now">—</span> above euro rates. Higher euro rates would help Dutch margins; a narrowing gap would erode part of the UK advantage.</p>
         </div>
@@ -257,7 +257,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
         <span class="pick"><select id="to-m" aria-label="To month"></select><select id="to-y" aria-label="To year"></select></span>
       </div>
       <div class="quick" id="quick">
-        <button class="btn" type="button" data-q="2015">Since 2015</button>
+        <button class="btn" type="button" data-q="2015">Full period</button>
         <button class="btn" type="button" data-q="2y">Last 2 years</button>
         <button class="btn" type="button" data-q="ly">Last year</button>
       </div>
@@ -270,7 +270,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
         <div class="chart" id="c-rates" data-open="rates"></div>
       </div>
       <div class="card" id="card-nii">
-        <div class="chart-head"><div><h3>Net interest income, indexed</h3><p class="note">Each bank's first year in your range = 100, so euros and pounds compare. De Volksbank's 2025 figure uses a new basis that flatters it.</p></div><button class="expand" type="button" data-open="nii"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>Expand</button></div>
+        <div class="chart-head"><div><h3>Net interest income, indexed</h3><p class="note">Each bank's first year in your range = 100, so euros and pounds compare. The dashed end point is the first half of 2026, doubled to a full-year pace. De Volksbank's 2025 figure uses a new basis that flatters it.</p></div><button class="expand" type="button" data-open="nii"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>Expand</button></div>
         <div class="legend"><span><span class="sw" style="background:var(--nl)"></span>Netherlands</span><span><span class="sw" style="background:var(--uk)"></span>United Kingdom</span></div>
         <div class="chart" id="c-nii" data-open="nii"></div>
       </div>
@@ -329,11 +329,12 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
       <div class="method">
         <p><b>Banks.</b> Netherlands: ING, ABN AMRO, Rabobank, de Volksbank (now ASN Bank; called SNS Bank before 2017). United Kingdom: Lloyds, NatWest (called RBS until 2020), Barclays, Santander UK. HSBC is left out because most of its profit comes from Asia.</p>
         <p><b>Rates.</b> The ECB deposit facility rate is the rate that matters most for euro-area banks with excess reserves. Bank Rate is the Bank of England's policy rate. Both are downloaded every morning from the central banks' own data feeds. Dates are effective dates.</p>
-        <p><b>Years covered.</b> Everything starts in 2015: central bank rates from January 2015, bank results from the 2015 financial year, the earliest year with reasonably comparable public reporting for all eight banks. Some early years are missing for Rabobank (2017–2020 income and margin), ABN AMRO (2015 and most of 2016), Barclays (2015 income and return) and Lloyds (2015 return).</p>
+        <p><b>Years covered.</b> Everything starts in 2015, the earliest year with reasonably comparable public reporting for all eight banks. Central bank rates run from January 2015 to the latest day; bank results run from the 2015 financial year to the first half of 2026. Some early years are missing for Rabobank (2017–2020 income and margin), ABN AMRO (2015 and most of 2016), Barclays (2015 income and return) and Lloyds (2015 return).</p>
         <p><b>Net interest income.</b> As reported each year. ING includes the TLTRO effect in 2021–22 and excludes it in 2020. Lloyds uses its underlying figure because insurance accounting distorts the statutory one. Rabobank 2022 comes from the EBA stress test. Barclays 2016–17 is restated for the sale of its African business. De Volksbank changed how it presents hedge results in 2025, which adds roughly €110m.</p>
         <p><b>Returns.</b> Dutch banks report return on equity, UK banks return on tangible equity; compare trends more than levels. ING's 2015–2018 figures are "underlying" (excluding one-offs), as it reported then. Santander UK's 2019–2022 figures are adjusted. Lloyds changed its RoTE basis in 2019 and restated 2022 for IFRS 17.</p>
         <p><b>Margins.</b> Banks change their margin definitions: NatWest changed its basis in 2021 and again in 2024, and ING's 2015–2018 figures cover the bank only. A sudden jump in one year can be a reporting change rather than a real change.</p>
         <p><b>Profit.</b> Each bank's headline figure, so definitions differ (see the Profit basis column). Use it to compare years within one bank.</p>
+        <p><b>First half of 2026.</b> The latest bank figures are for January–June 2026, shown as "H1 2026" with a hollow point and dashed line. Margins and returns are reported at a yearly rate, so they compare directly with full years. For the income chart, half-year income is doubled to a full-year pace; the table shows the actual half-year amounts. Headline numbers and findings use full years only. ING switched from ROE to return on tangible equity in 2026. Santander UK's 2026 figures are affected by its purchase of TSB. Rabobank and Barclays did not publish group interest income in sources I could access.</p>
         <p><b>Index.</b> The income chart sets each bank's first year in the chosen range to 100. A bank missing that year starts from its first available year.</p>
         <p><b>Causes.</b> The charts show timing and size, not proof of cause. Acquisitions, loan losses, bank taxes, fines and one-off items (such as ING's 2018 settlement and 2022 Russia provisions, or RBS's legacy conduct costs) also move the numbers.</p>
       </div>
@@ -371,7 +372,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
       <label for="m-to-m">to</label>
       <span class="pick"><select id="m-to-m" aria-label="To month"></select><select id="m-to-y" aria-label="To year"></select></span>
       <span class="quick">
-        <button class="btn" type="button" data-mq="2015">2015–today</button>
+        <button class="btn" type="button" data-mq="2015">Full period</button>
         <button class="btn" type="button" data-mq="2y">Last 2 years</button>
         <button class="btn" type="button" data-mq="ly">Last year</button>
       </span>
@@ -422,7 +423,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
 
   // ---------- Data ----------
   let RATES = [], BANKS = [], SOURCES = [];
-  let BANK_LIST = [];
+  let BANK_LIST = [], ALLB = [];
   const hidden = new Set();
   const today = new Date();
   const state = { from: null, to: null };
@@ -434,9 +435,10 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
     fetch('data/meta.json?v=' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null)
   ]).then(([r, b, s, meta]) => {
     RATES = r.map(d => ({ date: new Date(d.date + 'T00:00:00Z'), ecb: +d.ecb_deposit_rate, boe: +d.boe_bank_rate }));
-    BANKS = b.map(d => ({ ...d, year: +d.year, nii: num(d.net_interest_income_m), roe: num(d.return_on_equity_pct), nim: num(d.net_interest_margin_pct), profit: num(d.net_profit_m) }));
+    ALLB = b.map(d => ({ ...d, period: d.period || 'FY', year: +d.year, nii: num(d.net_interest_income_m), roe: num(d.return_on_equity_pct), nim: num(d.net_interest_margin_pct), profit: num(d.net_profit_m) }));
+    BANKS = ALLB.filter(d => d.period === 'FY');
     SOURCES = s;
-    BANK_LIST = [...new Map(BANKS.map(d => [d.bank, d.country])).entries()].map(([bank, country]) => ({ bank, country }));
+    BANK_LIST = [...new Map(ALLB.map(d => [d.bank, d.country])).entries()].map(([bank, country]) => ({ bank, country }));
     if (meta && meta.rates_checked_at) {
       $('#checked').textContent = 'Rates last checked ' + d3.utcFormat('%-d %b %Y, %H:%M UTC')(new Date(meta.rates_checked_at)) +
         (meta.rates_status === 'ok' ? '.' : ' (latest check failed; showing last good data).');
@@ -472,6 +474,8 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
     K.ecb_min = pct(d3.min(RATES, d => d.ecb));
     K.boe_low_max = pct(d3.max(RATES.filter(d => d.date < new Date('2021-12-01T00:00:00Z')), d => d.boe));
     const latest = d3.max(BANKS, d => d.year); K.latest = String(latest);
+    const h1y = d3.max(ALLB.filter(d => d.period === 'H1'), d => d.year);
+    K.h1_tag = h1y ? `, plus the first half of ${h1y}` : '';
     const val = (bank, y, f) => { const r = BANKS.find(d => d.bank === bank && d.year === y); return r ? r[f] : null; };
     const growth = (bank, a, b) => { const x = val(bank, a, 'nii'), y = val(bank, b, 'nii'); return x && y ? (y / x - 1) * 100 : null; };
     BANK_LIST.forEach(({ bank }) => {
@@ -585,11 +589,11 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
     const y0 = from.getUTCFullYear(), y1 = to.getUTCFullYear();
     const field = { nii: 'nii', roe: 'roe', nim: 'nim' }[key];
     return BANK_LIST.filter(b => !hidden.has(b.bank) && (!country || b.country === country)).map(({ bank, country }) => {
-      let rows = BANKS.filter(d => d.bank === bank && d.year >= y0 && d.year <= y1).sort((a, b) => a.year - b.year);
-      let values = rows.map(d => ({ x: d.year, y: d[field] }));
+      let rows = ALLB.filter(d => d.bank === bank && d.year >= y0 && d.year <= y1).sort((a, b) => a.year - b.year);
+      let values = rows.map(d => ({ x: d.year, partial: d.period === 'H1', y: d[field] == null ? null : (key === 'nii' && d.period === 'H1' ? d[field] * 2 : d[field]) }));
       if (key === 'nii') {
         const base = values.find(v => v.y != null);
-        values = values.map(v => ({ x: v.x, y: base && v.y != null ? Math.round(v.y / base.y * 1000) / 10 : null }));
+        values = values.map(v => ({ x: v.x, partial: v.partial, y: base && v.y != null ? Math.round(v.y / base.y * 1000) / 10 : null }));
       }
       return { name: bank, group: country, color: col(country), values };
     }).filter(s => s.values.filter(v => v.y != null).length >= (key === 'nii' ? 2 : 1));
@@ -655,15 +659,23 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
       const [a, b] = opt.xDomain, n = b - a + 1, room = Math.floor((W - m.l - m.r) / 44);
       const step = Math.max(1, Math.ceil(n / Math.max(1, room)));
       xt = d3.range(a, b + 1).filter(v => (v - a) % step === 0);
-      xf = d3.format('d');
+      const partialYears = new Set(opt.series.flatMap(s => s.values.filter(v => v.partial).map(v => v.x)));
+      xf = v => partialYears.has(v) ? 'H1 ' + v : String(v);
     }
     g.append('g').selectAll('text').data(xt).join('text').attr('x', d => x(d)).attr('y', H - 8).attr('text-anchor', 'middle').attr('fill', css('--muted')).attr('font-size', 12).text(d => xf(d));
     g.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', H - 28).attr('y2', H - 28).attr('stroke', css('--axis'));
     const line = d3.line().defined(d => d.y != null && !isNaN(d.y)).x(d => x(d.x)).y(d => y(d.y));
     if (opt.step) line.curve(d3.curveStepAfter);
     opt.series.forEach(s => {
-      g.append('path').attr('class', 'ln').attr('data-name', s.name).attr('d', line(s.values)).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
-      if (!opt.step) g.append('g').attr('class', 'pts').attr('data-name', s.name).selectAll('circle').data(s.values.filter(v => v.y != null && !isNaN(v.y))).join('circle').attr('cx', d => x(d.x)).attr('cy', d => y(d.y)).attr('r', 2.5).attr('fill', s.color);
+      const full = s.values.filter(v => !v.partial), part = s.values.filter(v => v.partial && v.y != null && !isNaN(v.y));
+      g.append('path').attr('class', 'ln').attr('data-name', s.name).attr('d', line(full)).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+      const lastFull = full.filter(v => v.y != null && !isNaN(v.y)).slice(-1)[0];
+      if (part.length && lastFull) g.append('path').attr('class', 'ln').attr('data-name', s.name).attr('d', line([lastFull, part[0]])).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 2).attr('stroke-dasharray', '4 4');
+      if (!opt.step) {
+        const pg = g.append('g').attr('class', 'pts').attr('data-name', s.name);
+        pg.selectAll('circle.f').data(full.filter(v => v.y != null && !isNaN(v.y))).join('circle').attr('class', 'f').attr('cx', d => x(d.x)).attr('cy', d => y(d.y)).attr('r', 2.5).attr('fill', s.color);
+        pg.selectAll('circle.p').data(part).join('circle').attr('class', 'p').attr('cx', d => x(d.x)).attr('cy', d => y(d.y)).attr('r', 3.5).attr('fill', css('--panel')).attr('stroke', s.color).attr('stroke-width', 2);
+      }
     });
     const placed = ends.map(e => ({ ...e, ty: y(e.last.y) })).sort((a, b) => a.ty - b.ty);
     const GAP = 14, TOP = 10, BOT = H - 30;
@@ -699,7 +711,8 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
         rule.style('display', null).attr('x1', cx).attr('x2', cx);
         dots.selectAll('circle').data(pts).join('circle').attr('cx', cx).attr('cy', p => y(p.v.y)).attr('r', 4).attr('fill', p => p.s.color).attr('stroke', css('--panel')).attr('stroke-width', 1.5);
         tip.style('display', null).html('');
-        tip.append('div').attr('class', 'h').text(opt.time ? d3.utcFormat('%-d %b %Y')(new Date(xi)) : String(xi));
+        const isPartial = !opt.time && opt.series.some(s => s.values.some(v => v.x === xi && v.partial));
+        tip.append('div').attr('class', 'h').text(opt.time ? d3.utcFormat('%-d %b %Y')(new Date(xi)) : (isPartial ? `H1 ${xi} (Jan–Jun)` : String(xi)));
         pts.forEach(p => { const r = tip.append('div').attr('class', 'r'); r.append('span').attr('class', 'sw').style('background', p.s.color); r.append('span').text(p.s.name); r.append('b').text(opt.yFmt(p.v.y)); });
         const bw = box.clientWidth, tw = tip.node().offsetWidth, left = cx * (bw / W);
         tip.style('left', (left + 12 + tw > bw ? Math.max(0, left - tw - 12) : left + 12) + 'px').style('top', '8px');
@@ -748,14 +761,14 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
   function drawModal() {
     if (!mKey) return;
     render($('#m-chart'), mKey, mFrom, mTo, modalHeight(), mFocus, mCountry);
-    $('#m-range').textContent = mKey === 'rates' ? `${monthYear(mFrom)} – ${monthYear(mTo)}` : `${mFrom.getUTCFullYear()} – ${Math.min(mTo.getUTCFullYear(), d3.max(BANKS, d => d.year))}`;
+    $('#m-range').textContent = mKey === 'rates' ? `${monthYear(mFrom)} – ${monthYear(mTo)}` : `${mFrom.getUTCFullYear()} – ${(() => { const y = Math.min(mTo.getUTCFullYear(), d3.max(ALLB, d => d.year)); return ALLB.some(d => d.year === y && d.period === 'H1') ? 'H1 ' + y : y; })()}`;
   }
   function drawBrush() {
     const box = $('#m-brush'); box.innerHTML = '';
     const W = Math.max(280, box.clientWidth), H = 64, m = { l: 8, r: 8 };
     const full = mKey === 'rates'
       ? { from: startOfMonth(START_YEAR, 0), to: new Date(Math.max(+RATES[RATES.length - 1].date, +today)) }
-      : { from: new Date(Date.UTC(d3.min(BANKS, d => d.year), 0, 1)), to: new Date(Date.UTC(d3.max(BANKS, d => d.year), 11, 31)) };
+      : { from: new Date(Date.UTC(d3.min(ALLB, d => d.year), 0, 1)), to: new Date(Date.UTC(d3.max(ALLB, d => d.year), 11, 31)) };
     const series = seriesFor(mKey, full.from, full.to, mCountry);
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H).attr('class', 'brush');
     const x = d3.scaleUtc([full.from, full.to], [m.l, W - m.r]);
@@ -789,7 +802,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
   function drawTable() {
     const tb = $('#tbl tbody'); tb.innerHTML = '';
     const c = $('#country').value, bk = $('#bank').value, yf = +$('#yfrom').value, yt = +$('#yto').value;
-    let rows = BANKS.filter(r => (!c || r.country === c) && (!bk || r.bank === bk) && r.year >= Math.min(yf, yt) && r.year <= Math.max(yf, yt));
+    let rows = ALLB.filter(r => (!c || r.country === c) && (!bk || r.bank === bk) && r.year >= Math.min(yf, yt) && r.year <= Math.max(yf, yt));
     $('#tcount').textContent = rows.length + (rows.length === 1 ? ' row' : ' rows');
     if (sortKey) {
       const isNum = numCols.includes(sortKey);
@@ -803,7 +816,7 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
     rows.forEach(r => {
       const tr = document.createElement('tr');
       const cells = [
-        [r.bank], [r.country], [r.year, 'n'], [r.currency],
+        [r.bank], [r.country], [r.period === 'H1' ? 'H1 ' + r.year : r.year, 'n'], [r.currency],
         [r.nii == null ? '—' : nf(r.nii), 'n'],
         [r.nim == null ? '—' : r.nim.toFixed(2) + '%', 'n'],
         [r.roe == null ? '—' : minus(r.roe.toFixed(1)) + '%', 'n' + (r.roe < 0 ? ' neg' : '')],
@@ -818,9 +831,10 @@ footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size:
   }
   $$('#tbl th button').forEach(b => b.addEventListener('click', () => { const k = b.dataset.k; if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = numCols.includes(k) ? -1 : 1; } drawTable(); }));
   function initTableFilters() {
-    const years = [...new Set(BANKS.map(d => d.year))].sort((a, b) => a - b);
-    $('#yfrom').innerHTML = years.map(y => `<option>${y}</option>`).join('');
-    $('#yto').innerHTML = years.map(y => `<option>${y}</option>`).join('');
+    const years = [...new Set(ALLB.map(d => d.year))].sort((a, b) => a - b);
+    const lab = y => ALLB.some(d => d.year === y && d.period === 'H1') ? `<option value="${y}">H1 ${y}</option>` : `<option>${y}</option>`;
+    $('#yfrom').innerHTML = years.map(lab).join('');
+    $('#yto').innerHTML = years.map(lab).join('');
     $('#yfrom').value = years[0]; $('#yto').value = years[years.length - 1];
     const fillBanks = () => {
       const c = $('#country').value, cur = $('#bank').value;
