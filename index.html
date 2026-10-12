@@ -4,473 +4,675 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rates &amp; Banks: NL vs UK</title>
-<meta name="description" content="How ECB and Bank of England interest rate changes affected Dutch and UK bank earnings, 2021 to today. Rates update daily.">
+<meta name="description" content="How ECB and Bank of England interest rate changes affected Dutch and UK bank earnings. Rates update daily.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 <style>
-/* Layout: one centred column, cards in an auto-fit grid. Euro = blue, sterling = rust. */
+/* Layout: one centred column; a sticky tab bar switches between five sections. Euro = blue, sterling = rust. */
 :root {
-  --color-bg: #f6f7f9; --color-panel: #ffffff; --color-fg: #17202b; --color-fg-muted: #5b6573;
-  --color-border-line: #dde1e7; --color-bad: #b42318;
-  --series-nl: #2d5fa6; --series-uk: #b5532a;
-  --cds-chart-grid: #e6e9ee; --cds-chart-axis: #b8bfc9; --cds-chart-reference: #8d96a3;
-  --cds-surface-popover: #ffffff; --cds-border: #d3d8df; --cds-shadow-popover: 0 4px 16px rgba(23,32,43,.12); --cds-text-secondary: #5b6573;
-  --font-anthropic-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-anthropic-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --cds-font-size-caption: .8125rem; --cds-font-size-body: .9375rem; --cds-font-size-heading: 1.0625rem; --cds-font-size-title: 1.375rem;
-  --cds-font-weight-medium: 600;
-  --cds-gap-xs: .25rem; --cds-gap-sm: .5rem; --cds-gap-md: 1rem; --cds-gap-lg: 1.5rem; --cds-gap-xl: 2.5rem;
-  --cds-pad-xs: .375rem; --cds-pad-sm: .625rem; --cds-pad-md: .875rem; --cds-pad-lg: 1.25rem;
-  --cds-radius: 10px; --cds-dur-slow: .3s;
+  --bg: #f6f7f9; --panel: #ffffff; --fg: #17202b; --muted: #5b6573; --line: #dde1e7; --bad: #b42318; --good: #067647;
+  --nl: #2d5fa6; --uk: #b5532a; --accent: #17202b;
+  --grid: #e8ebef; --axis: #b8bfc9; --ref: #8d96a3; --chip: #eef1f5;
+  --pop: #ffffff; --pop-line: #d3d8df; --shadow: 0 6px 24px rgba(23,32,43,.14); --scrim: rgba(15,20,26,.55);
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --fs-cap: .8125rem; --fs-body: .9375rem; --fs-h: 1.0625rem; --fs-title: 1.375rem;
+  --r: 10px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #0f141a; --color-panel: #171e26; --color-fg: #e7ebf0; --color-fg-muted: #9aa5b3;
-    --color-border-line: #2a333e; --color-bad: #f97066;
-    --series-nl: #7aa7e8; --series-uk: #e8916a;
-    --cds-chart-grid: #232c37; --cds-chart-axis: #46515e; --cds-chart-reference: #6b7684;
-    --cds-surface-popover: #1d2530; --cds-border: #333d49; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.4); --cds-text-secondary: #9aa5b3;
+    --bg: #0f141a; --panel: #171e26; --fg: #e7ebf0; --muted: #9aa5b3; --line: #2a333e; --bad: #f97066; --good: #47cd89;
+    --nl: #7aa7e8; --uk: #e8916a; --accent: #e7ebf0;
+    --grid: #232c37; --axis: #46515e; --ref: #6b7684; --chip: #222b36;
+    --pop: #1d2530; --pop-line: #333d49; --shadow: 0 6px 24px rgba(0,0,0,.45); --scrim: rgba(0,0,0,.65);
     color-scheme: dark;
   }
 }
-html { background: var(--color-bg); }
-body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-body); }
-#dash-root { padding-inline: clamp(16px, 4vw, 40px); padding-block: clamp(24px, 5vw, 56px); }
-.dash-skeleton { color: transparent !important; background: var(--color-border-line); border-radius: 4px; }
-.rb-chart.dash-skeleton { background: transparent; }
-.rb-foot { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); border-top: 1px solid var(--color-border-line); padding-top: var(--cds-pad-md); display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-lg); }
-a { color: inherit; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: var(--fs-body); line-height: 1.5; }
+a { color: inherit; text-underline-offset: 2px; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1120px; margin-inline: auto; padding-inline: clamp(16px, 4vw, 40px); }
+
+/* Header + tabs */
+.top { padding-block: clamp(24px, 4vw, 44px) 0; }
+.eyebrow { font-size: var(--fs-cap); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.8rem, 3.6vw, 2.5rem); line-height: 1.15; margin: .3rem 0 .4rem; text-wrap: balance; }
+.tagline { margin: 0; color: var(--muted); max-width: 62ch; }
+.tabbar { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); margin-top: 1.25rem; }
+.tabs { display: flex; gap: .25rem; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab-btn { background: none; border: 0; padding: .8rem .9rem; cursor: pointer; color: var(--muted); font-weight: 500; white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tab-btn[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--fg); }
+.tab-btn:hover { color: var(--fg); }
+main { padding-block: 1.75rem 3rem; }
+.tab { display: flex; flex-direction: column; gap: 2rem; }
+h2 { font-size: var(--fs-title); font-weight: 600; margin: 0; }
+h3 { font-size: var(--fs-h); font-weight: 600; margin: 0; text-wrap: balance; }
+.note { font-size: var(--fs-cap); color: var(--muted); margin: 0; }
+.section { display: flex; flex-direction: column; gap: 1rem; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 1.25rem; display: flex; flex-direction: column; gap: .6rem; min-width: 0; }
+
+/* Overview */
+.intro { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2rem; align-items: start; }
+@media (max-width: 820px) { .intro { grid-template-columns: 1fr; } }
+.prose p { margin: 0 0 .8rem; max-width: 66ch; }
+.prose p:last-child { margin-bottom: 0; }
+.lead { font-size: 1.0625rem; }
+.howto ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: .45rem; }
+.howto b { font-weight: 600; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; }
+.kpi .lab { font-size: var(--fs-cap); color: var(--muted); }
+.kpi .val { font-family: var(--serif); font-size: 2.2rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kpi .sub { font-size: var(--fs-cap); color: var(--muted); }
+.kpi[data-jump] { cursor: pointer; transition: border-color .15s, transform .15s; }
+.kpi[data-jump]:hover { border-color: var(--axis); transform: translateY(-1px); }
+.kpi .go { margin-top: auto; padding-top: .35rem; font-size: var(--fs-cap); font-weight: 600; }
+.sw { display: inline-block; width: .6rem; height: .6rem; border-radius: 50%; margin-right: .35rem; vertical-align: baseline; }
+.findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1.25rem 1.5rem; }
+.finding { border-top: 2px solid var(--line); padding-top: .85rem; display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+.finding .era { font-size: var(--fs-cap); color: var(--muted); }
+.finding p { margin: 0; }
+.num { font-weight: 600; font-variant-numeric: tabular-nums; }
+.goto { display: flex; flex-wrap: wrap; gap: .5rem; }
+.btn { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: .4rem .9rem; cursor: pointer; font-size: var(--fs-cap); font-weight: 500; }
+.btn:hover { border-color: var(--axis); }
+.btn[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+/* Charts tab controls */
+.controls { display: flex; flex-direction: column; gap: .9rem; }
+.range { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
+.range label { font-size: var(--fs-cap); color: var(--muted); }
+.pick { display: inline-flex; gap: .35rem; }
+select { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: .35rem .5rem; }
+.quick { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: .35rem; background: var(--chip); border: 1px solid transparent; border-radius: 999px; padding: .28rem .7rem; cursor: pointer; font-size: var(--fs-cap); }
+.chip[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: 1rem; }
+.chart-head { display: flex; justify-content: space-between; align-items: flex-start; gap: .75rem; }
+.expand { flex: none; display: inline-flex; align-items: center; gap: .35rem; background: none; border: 1px solid var(--line); border-radius: 8px; padding: .3rem .55rem; cursor: pointer; font-size: var(--fs-cap); color: var(--muted); }
+.expand:hover { color: var(--fg); border-color: var(--axis); }
+.expand svg { width: 14px; height: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: var(--fs-cap); color: var(--muted); }
+.chart { position: relative; width: 100%; min-height: 300px; cursor: zoom-in; }
+.chart svg { display: block; overflow: visible; }
+.empty { display: flex; align-items: center; justify-content: center; min-height: 300px; color: var(--muted); font-size: var(--fs-cap); text-align: center; padding: 1rem; }
+.tip { position: absolute; pointer-events: none; background: var(--pop); border: 1px solid var(--pop-line); border-radius: 8px; box-shadow: var(--shadow); padding: .4rem .6rem; font-size: var(--fs-cap); font-variant-numeric: tabular-nums; white-space: nowrap; z-index: 5; }
+.tip .h { color: var(--muted); margin-bottom: 2px; }
+.tip .r { display: flex; align-items: center; gap: .4rem; }
+.tip .r b { margin-left: auto; padding-left: .8rem; font-weight: 600; }
+path.ln, g.pts, text.end { transition: opacity .15s; }
+
+/* Modal */
+.modal { position: fixed; inset: 0; z-index: 50; background: var(--scrim); display: flex; align-items: stretch; justify-content: center; padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); }
+.modal[hidden] { display: none; }
+.sheet { background: var(--panel); width: min(1200px, 100%); margin: clamp(0px, 3vw, 32px); border-radius: var(--r); display: flex; flex-direction: column; gap: .75rem; padding: clamp(14px, 2.5vw, 24px); overflow: auto; }
+@media (max-width: 600px) { .sheet { margin: 0; border-radius: 0; } }
+.sheet-head { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; }
+.close { background: none; border: 1px solid var(--line); border-radius: 8px; padding: .3rem .7rem; cursor: pointer; }
+.mchart { position: relative; width: 100%; min-height: 300px; flex: none; }
+.brush-wrap { border-top: 1px solid var(--line); padding-top: .6rem; }
+.brush-wrap .note { margin-bottom: .3rem; }
+.brush .selection { fill: var(--fg); fill-opacity: .08; stroke: var(--fg); stroke-opacity: .5; }
+.brush .handle { fill: var(--fg); fill-opacity: .5; }
+.mpick { padding-block: .1rem .2rem; }
+.mpick .quick { display: inline-flex; flex-wrap: wrap; gap: .4rem; }
+.mrange { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; }
+
+/* Tables */
+.tools { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+input[type="search"] { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: .4rem .6rem; min-width: 0; width: min(20rem, 100%); }
+.tablewrap { overflow: auto; max-height: 34rem; border-radius: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-cap); font-variant-numeric: tabular-nums; }
+th, td { padding: .45rem .6rem; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { position: sticky; top: 0; background: var(--panel); font-weight: 600; z-index: 1; }
+th button { all: unset; cursor: pointer; }
+th button:focus-visible { outline: 2px solid var(--accent); }
+td.n, th.n { text-align: right; }
+td.neg { color: var(--bad); }
+.src td { white-space: normal; vertical-align: top; }
+.src a { word-break: break-all; }
+.method { columns: 2 22rem; column-gap: 2.5rem; }
+.method p { margin: 0 0 .9rem; break-inside: avoid; }
+.method b { font-weight: 600; }
+footer { border-top: 1px solid var(--line); padding-block: 1rem 2rem; font-size: var(--fs-cap); color: var(--muted); display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
-<script>
-/* Small data layer: loads the CSV files in /data and runs the calculations. */
-window.dash = (function () {
-  const FILES = { policy_rates: 'data/policy_rates.csv', bank_results: 'data/bank_results.csv', sources: 'data/sources.csv' };
-  const state = {}, calcs = {}, listeners = [];
-  Object.keys(FILES).forEach(id => { state[id] = { status: 'loading', data: [] }; });
-  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const api = {
-    colors: [],
-    data(id) {
-      if (state[id]) return state[id];
-      const c = calcs[id];
-      if (!c) return { status: 'missing', data: [] };
-      const ins = c.inputs.map(i => api.data(i));
-      if (ins.some(s => s.status === 'error')) return { status: 'error', data: [] };
-      if (ins.some(s => s.status !== 'ok')) return { status: 'loading', data: [] };
-      try { return { status: 'ok', data: c.fn(...ins.map(s => s.data)) }; }
-      catch (e) { console.error(id, e); return { status: 'error', data: [] }; }
-    },
-    calc(id, def) { calcs[id] = def; },
-    onData(fn) { listeners.push(fn); fn(); }
-  };
-  const run = () => { api.colors = [css('--series-nl'), css('--series-uk')]; listeners.forEach(f => f()); };
-  Object.entries(FILES).forEach(([id, path]) => {
-    d3.csv(path + '?v=' + Date.now()).then(rows => { state[id] = { status: 'ok', data: rows }; run(); })
-      .catch(() => { state[id] = { status: 'error', data: [] }; run(); });
-  });
-  let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(run, 150); });
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', run);
-  api.colors = [css('--series-nl'), css('--series-uk')];
-  return api;
-})();
-</script>
 </head>
 <body>
-<main id="dash-root">
-<style>
-.rb { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); }
-.rb-head { display: flex; flex-direction: column; gap: var(--cds-gap-sm); }
-.rb-eyebrow { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); letter-spacing: .04em; text-transform: uppercase; }
-.rb-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: clamp(1.7rem, 3.4vw, 2.4rem); line-height: 1.15; margin: 0; text-wrap: balance; }
-.rb-take { font-size: var(--cds-font-size-heading); line-height: 1.5; max-width: 62ch; margin: 0; color: var(--color-fg); }
-.rb-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--cds-gap-md); }
-.rb-kpi { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-xs); min-width: 0; }
-.rb-kpi-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
-.rb-kpi-val { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: 2.2rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
-.rb-kpi-sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
-.rb-swatch { display: inline-block; width: .6rem; height: .6rem; border-radius: 50%; margin-right: .35rem; vertical-align: baseline; }
-.rb-section { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
-.rb-h2 { font-size: var(--cds-font-size-title); font-weight: var(--cds-font-weight-medium); margin: 0; }
-.rb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: var(--cds-gap-md); }
-.rb-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
-.rb-card h3 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
-.rb-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; line-height: 1.5; }
-.rb-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
-.rb-chart { position: relative; min-height: 300px; width: 100%; }
-.rb-chart path.rb-line, .rb-chart circle.rb-pt, .rb-chart text.rb-end { transition: opacity .15s; }
-.rb-chart text.rb-end { cursor: default; }
-.rb-chart svg { display: block; overflow: visible; }
-.rb-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; white-space: nowrap; z-index: 2; }
-.rb-tip .t-head { color: var(--cds-text-secondary); margin-bottom: 2px; }
-.rb-tip .t-row { display: flex; align-items: center; gap: .4rem; }
-.rb-tip .t-row b { margin-left: auto; padding-left: .8rem; font-weight: 500; }
-.rb-findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
-.rb-finding { border-top: 2px solid var(--color-border-line); padding-top: var(--cds-pad-md); display: flex; flex-direction: column; gap: var(--cds-gap-xs); min-width: 0; }
-.rb-finding h3 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; text-wrap: balance; }
-.rb-finding p { margin: 0; line-height: 1.55; font-size: var(--cds-font-size-body); }
-.rb .rb-num { font-weight: 600; font-variant-numeric: tabular-nums; }
-.rb-tablewrap { overflow: auto; max-height: 30rem; }
-.rb-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
-.rb-table th, .rb-table td { padding: .45rem .6rem; text-align: left; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
-.rb-table th { position: sticky; top: 0; background: var(--color-panel); font-weight: var(--cds-font-weight-medium); z-index: 1; }
-.rb-table th button { all: unset; cursor: pointer; display: inline-flex; gap: .25rem; align-items: center; }
-.rb-table th button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; border-radius: 2px; }
-.rb-table td.num, .rb-table th.num { text-align: right; }
-.rb-table th.num button { justify-content: flex-end; }
-.rb-table a { color: inherit; text-decoration: underline; text-underline-offset: 2px; word-break: break-all; white-space: normal; }
-.rb-sources td { white-space: normal; vertical-align: top; }
-.rb-method { columns: 2 22rem; column-gap: var(--cds-gap-xl); font-size: var(--cds-font-size-body); line-height: 1.55; }
-.rb-method p { margin: 0 0 var(--cds-gap-sm); break-inside: avoid; }
-.rb-method b { font-weight: 600; }
-[data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
-.rb-fail { display: flex; align-items: center; justify-content: center; gap: .4rem; min-height: inherit; height: 100%; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
-.rb-fail::before { content: ""; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
-</style>
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">Interest rates and bank earnings · Netherlands vs United Kingdom</div>
+    <h1>Rates &amp; Banks: NL vs UK</h1>
+    <p class="tagline">How ECB and Bank of England rate decisions shaped what eight Dutch and British banks earn. Central bank rates from 2010, updated daily; bank results from 2015.</p>
+  </div>
+  <div class="tabbar">
+    <nav class="wrap tabs" role="tablist" aria-label="Sections">
+      <button class="tab-btn" role="tab" id="t-overview" data-tab="overview" aria-selected="true">Overview &amp; findings</button>
+      <button class="tab-btn" role="tab" id="t-charts" data-tab="charts" aria-selected="false">Charts</button>
+      <button class="tab-btn" role="tab" id="t-figures" data-tab="figures" aria-selected="false">Bank figures</button>
+      <button class="tab-btn" role="tab" id="t-method" data-tab="method" aria-selected="false">Method &amp; caveats</button>
+      <button class="tab-btn" role="tab" id="t-sources" data-tab="sources" aria-selected="false">Sources</button>
+    </nav>
+  </div>
+</header>
 
-<div class="rb">
-  <header class="rb-head" id="top">
-    <div class="rb-eyebrow">Central bank rates and bank earnings · 2021–<span class="rb-latest">2025</span> · Netherlands vs United Kingdom</div>
-    <h1 class="rb-title">Rates &amp; Banks: NL vs UK</h1>
-    <p class="rb-take">When interest rates rose, UK banks' net interest income grew by an average of <span class="rb-num dash-skeleton" data-source="country_growth" data-field="avg_growth_pct" data-where="country=United Kingdom">—</span> between 2021 and <span class="rb-latest">2025</span>. Dutch banks grew by <span class="rb-num dash-skeleton" data-source="country_growth" data-field="avg_growth_pct" data-where="country=Netherlands">—</span>. But the differences between banks in the same country were bigger than the gap between the two countries.</p>
-  </header>
+<main class="wrap">
+  <!-- OVERVIEW -->
+  <section class="tab" id="overview" role="tabpanel" aria-labelledby="t-overview">
+    <div class="intro">
+      <div class="prose">
+        <p class="lead">Banks make most of their money from the gap between what they earn on loans and what they pay on deposits. That gap is called <b>net interest income</b>, and it moves with central bank rates.</p>
+        <p>When rates rise, banks raise loan rates quickly but pass on only part of the increase to savers, so the gap widens. When rates fall, especially below zero, the gap shrinks: banks rarely charge ordinary savers negative rates, so deposits become less profitable. UK banks also lock in rates for several years with a "structural hedge", which delays the effect of rate changes in both directions.</p>
+        <p>This site follows two very different rate paths. The European Central Bank kept its deposit rate below zero for about eight years and raised it late. The Bank of England stayed positive, moved first in 2021 and went higher. It tracks how eight banks fared through both: ING, ABN AMRO, Rabobank and de Volksbank in the Netherlands, and Lloyds, NatWest, Barclays and Santander UK in the United Kingdom.</p>
+      </div>
+      <div class="card howto">
+        <h3>How to use this site</h3>
+        <ul>
+          <li><b>Overview:</b> the headline numbers and what they mean.</li>
+          <li><b>Charts:</b> pick any period, down to the month. Click a chart, or a headline number, to open it full screen with its own date picker and zoom slider.</li>
+          <li><b>Bank figures:</b> every number in one table you can sort and search.</li>
+          <li><b>Method &amp; caveats:</b> how the numbers were collected and where to be careful.</li>
+          <li><b>Sources:</b> a link for every figure.</li>
+        </ul>
+      </div>
+    </div>
 
-  <div class="rb-kpis" id="kpis">
-    <div class="rb-kpi">
-      <div class="rb-kpi-label"><span class="rb-swatch" data-color="1"></span>Bank of England peak rate</div>
-      <div class="rb-kpi-val dash-skeleton" data-source="rate_summary" data-field="boe_peak" data-row="0">—</div>
-      <div class="rb-kpi-sub">First hike <span class="dash-skeleton" data-source="rate_summary" data-field="boe_first_hike" data-row="0">—</span> · now <span class="dash-skeleton" data-source="rate_summary" data-field="boe_now" data-row="0">—</span></div>
+    <div class="kpis">
+      <div class="card kpi" role="button" tabindex="0" data-jump="boe" aria-label="Open the Bank of England rate chart"><div class="lab"><span class="sw" style="background:var(--uk)"></span>Bank of England peak rate (2021–)</div><div class="val" data-k="boe_peak">—</div><div class="sub">First hike <span data-k="boe_first_hike">—</span> · now <span data-k="boe_now">—</span></div><div class="go">See the chart →</div></div>
+      <div class="card kpi" role="button" tabindex="0" data-jump="ecb" aria-label="Open the ECB rate chart"><div class="lab"><span class="sw" style="background:var(--nl)"></span>ECB peak deposit rate (2021–)</div><div class="val" data-k="ecb_peak">—</div><div class="sub">First hike <span data-k="ecb_first_hike">—</span> · now <span data-k="ecb_now">—</span></div><div class="go">See the chart →</div></div>
+      <div class="card kpi" role="button" tabindex="0" data-jump="uk" aria-label="Open the UK net interest income chart"><div class="lab"><span class="sw" style="background:var(--uk)"></span>UK net interest income, 2021→<span data-k="latest">—</span></div><div class="val" data-k="uk_growth">—</div><div class="sub">Average of Lloyds, NatWest, Barclays and Santander UK</div><div class="go">See the chart →</div></div>
+      <div class="card kpi" role="button" tabindex="0" data-jump="nl" aria-label="Open the Dutch net interest income chart"><div class="lab"><span class="sw" style="background:var(--nl)"></span>Dutch net interest income, 2021→<span data-k="latest">—</span></div><div class="val" data-k="nl_growth">—</div><div class="sub">Average of ING, ABN AMRO, Rabobank and de Volksbank</div><div class="go">See the chart →</div></div>
     </div>
-    <div class="rb-kpi">
-      <div class="rb-kpi-label"><span class="rb-swatch" data-color="0"></span>ECB peak deposit rate</div>
-      <div class="rb-kpi-val dash-skeleton" data-source="rate_summary" data-field="ecb_peak" data-row="0">—</div>
-      <div class="rb-kpi-sub">First hike <span class="dash-skeleton" data-source="rate_summary" data-field="ecb_first_hike" data-row="0">—</span> · now <span class="dash-skeleton" data-source="rate_summary" data-field="ecb_now" data-row="0">—</span></div>
+
+    <div class="section">
+      <h2>Key findings</h2>
+      <div class="findings">
+        <div class="finding">
+          <div class="era">The low-rate years</div>
+          <h3>1. Eight years of negative euro rates</h3>
+          <p>The ECB's deposit rate was below zero from <span class="num" data-k="neg_from">—</span> to <span class="num" data-k="neg_to">—</span>, about <span class="num" data-k="neg_years">—</span> years, bottoming at <span class="num" data-k="ecb_min">—</span>. The Bank of England never went negative, but between 2010 and 2021 its rate never rose above <span class="num" data-k="boe_low_max">—</span>.</p>
+        </div>
+        <div class="finding">
+          <div class="era">The low-rate years</div>
+          <h3>2. Low rates meant flat or falling income</h3>
+          <p>From 2015 to 2020, net interest income changed <span class="num" data-k="g1520_NatWest">—</span> at NatWest (then RBS), <span class="num" data-k="g1520_Lloyds">—</span> at Lloyds, <span class="num" data-k="g1520_Santander UK">—</span> at Santander UK and <span class="num" data-k="g1520_de Volksbank">—</span> at de Volksbank. ING (<span class="num" data-k="g1520_ING">—</span>) grew mainly by lending more, not by earning more per loan: its margin stayed near <span class="num" data-k="ing_nim_1520">—</span>.</p>
+        </div>
+        <div class="finding">
+          <div class="era">The hiking cycle</div>
+          <h3>3. The Bank of England moved first and went higher</h3>
+          <p>The BoE started raising rates in <span class="num" data-k="boe_first_hike">—</span>, seven months before the ECB (<span class="num" data-k="ecb_first_hike">—</span>). It peaked at <span class="num" data-k="boe_peak">—</span>, against <span class="num" data-k="ecb_peak">—</span> for the ECB. Euro rates started below zero, so Dutch banks began from a weaker position.</p>
+        </div>
+        <div class="finding">
+          <div class="era">The hiking cycle</div>
+          <h3>4. UK income grew more, but the bank mattered more than the country</h3>
+          <p>From 2021 to <span data-k="latest">—</span>, net interest income rose <span class="num" data-k="g21_Barclays">—</span> at Barclays and <span class="num" data-k="g21_NatWest">—</span> at NatWest. Rabobank kept pace at <span class="num" data-k="g21_Rabobank">—</span>, while ING (<span class="num" data-k="g21_ING">—</span>) and Santander UK (<span class="num" data-k="g21_Santander UK">—</span>) barely grew. Part of the UK growth comes from acquisitions: Barclays bought Tesco Bank's retail business, and NatWest bought Metro Bank mortgages and Sainsbury's Bank's core banking.</p>
+        </div>
+        <div class="finding">
+          <div class="era">After the peak</div>
+          <h3>5. When rates fell, Dutch income slipped first</h3>
+          <p>By <span data-k="latest">—</span>, ING was <span class="num" data-k="fp_ING">—</span>, de Volksbank <span class="num" data-k="fp_de Volksbank">—</span> and Rabobank <span class="num" data-k="fp_Rabobank">—</span>. NatWest was <span class="num" data-k="fp_NatWest">—</span> and Barclays <span class="num" data-k="fp_Barclays">—</span>; Lloyds and Santander UK dipped in 2024 and then recovered. A likely reason is the UK structural hedge, which keeps feeding higher rates into income after cuts begin.</p>
+        </div>
+        <div class="finding">
+          <div class="era">Profitability</div>
+          <h3>6. From heavy losses to the most profitable</h3>
+          <p>NatWest, then RBS, was still clearing up after the 2008 crisis: its return on tangible equity was <span class="num" data-k="nw_2016">—</span> in 2016. By <span data-k="latest">—</span> it was <span class="num" data-k="nw_latest">—</span>, the highest of the eight banks. Barclays went the other way in the hiking cycle, from <span class="num" data-k="bc_2021">—</span> in 2021 to <span class="num" data-k="bc_latest">—</span>, even though its interest income grew the most. Costs, loan losses and business mix matter as much as rates.</p>
+        </div>
+        <div class="finding">
+          <div class="era">Today</div>
+          <h3>7. Where rates are now</h3>
+          <p>The ECB last changed its deposit rate in <span class="num" data-k="ecb_last">—</span>, to <span class="num" data-k="ecb_now">—</span>. The Bank of England last moved in <span class="num" data-k="boe_last">—</span>, to <span class="num" data-k="boe_now">—</span>. UK rates are <span class="num" data-k="gap_now">—</span> above euro rates. Higher euro rates would help Dutch margins; a narrowing gap would erode part of the UK advantage.</p>
+        </div>
+      </div>
     </div>
-    <div class="rb-kpi">
-      <div class="rb-kpi-label"><span class="rb-swatch" data-color="1"></span>UK net interest income, 2021→<span class="rb-latest">2025</span></div>
-      <div class="rb-kpi-val dash-skeleton" data-source="country_growth" data-field="avg_growth_pct" data-where="country=United Kingdom">—</div>
-      <div class="rb-kpi-sub">Average of Lloyds, NatWest, Barclays and Santander UK</div>
+    <div class="goto">
+      <button class="btn" type="button" data-go="charts">Explore the charts →</button>
+      <button class="btn" type="button" data-go="figures">See all bank figures →</button>
     </div>
-    <div class="rb-kpi">
-      <div class="rb-kpi-label"><span class="rb-swatch" data-color="0"></span>Dutch net interest income, 2021→<span class="rb-latest">2025</span></div>
-      <div class="rb-kpi-val dash-skeleton" data-source="country_growth" data-field="avg_growth_pct" data-where="country=Netherlands">—</div>
-      <div class="rb-kpi-sub">Average of ING, ABN AMRO, Rabobank and de Volksbank</div>
+  </section>
+
+  <!-- CHARTS -->
+  <section class="tab" id="charts" role="tabpanel" aria-labelledby="t-charts" hidden>
+    <div class="card controls">
+      <div class="range">
+        <label for="from-m">From</label>
+        <span class="pick"><select id="from-m" aria-label="From month"></select><select id="from-y" aria-label="From year"></select></span>
+        <label for="to-m">to</label>
+        <span class="pick"><select id="to-m" aria-label="To month"></select><select id="to-y" aria-label="To year"></select></span>
+      </div>
+      <div class="quick" id="quick">
+        <button class="btn" type="button" data-q="all">All (rates from 2010)</button>
+        <button class="btn" type="button" data-q="2015">Since 2015</button>
+        <button class="btn" type="button" data-q="2021">Hiking cycle (2021–)</button>
+        <button class="btn" type="button" data-q="2y">Last 2 years</button>
+        <button class="btn" type="button" data-q="ly">Last full year</button>
+      </div>
+      <div class="chips" id="chips" aria-label="Banks shown"></div>
+      <p class="note">Rates change on specific days, so they follow the months you pick. Bank results are yearly, so bank charts show the years inside your range. Click a bank to hide or show it.</p>
+    </div>
+    <div class="grid">
+      <div class="card" id="card-rates">
+        <div class="chart-head"><div><h3>Policy rates</h3><p class="note">ECB deposit facility rate and Bank of England Bank Rate.</p></div><button class="expand" type="button" data-open="rates"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>Expand</button></div>
+        <div class="chart" id="c-rates" data-open="rates"></div>
+      </div>
+      <div class="card" id="card-nii">
+        <div class="chart-head"><div><h3>Net interest income, indexed</h3><p class="note">Each bank's first year in your range = 100, so euros and pounds compare. De Volksbank's 2025 figure uses a new basis that flatters it.</p></div><button class="expand" type="button" data-open="nii"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>Expand</button></div>
+        <div class="legend"><span><span class="sw" style="background:var(--nl)"></span>Netherlands</span><span><span class="sw" style="background:var(--uk)"></span>United Kingdom</span></div>
+        <div class="chart" id="c-nii" data-open="nii"></div>
+      </div>
+      <div class="card" id="card-roe">
+        <div class="chart-head"><div><h3>Return on equity</h3><p class="note">Profit as a share of shareholders' equity. Dutch banks report ROE; UK banks report return on tangible equity (RoTE), usually a little higher.</p></div><button class="expand" type="button" data-open="roe"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>Expand</button></div>
+        <div class="legend"><span><span class="sw" style="background:var(--nl)"></span>Netherlands (ROE)</span><span><span class="sw" style="background:var(--uk)"></span>United Kingdom (RoTE)</span></div>
+        <div class="chart" id="c-roe" data-open="roe"></div>
+      </div>
+      <div class="card" id="card-nim">
+        <div class="chart-head"><div><h3>Net interest margin</h3><p class="note">Net interest income as a share of interest-earning assets. Definitions change over time; see Method &amp; caveats. Barclays reports no group figure.</p></div><button class="expand" type="button" data-open="nim"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9"/></svg>Expand</button></div>
+        <div class="legend"><span><span class="sw" style="background:var(--nl)"></span>Netherlands</span><span><span class="sw" style="background:var(--uk)"></span>United Kingdom</span></div>
+        <div class="chart" id="c-nim" data-open="nim"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FIGURES -->
+  <section class="tab" id="figures" role="tabpanel" aria-labelledby="t-figures" hidden>
+    <div class="section">
+      <h2>All bank figures</h2>
+      <p class="note">Millions in each bank's reporting currency (EUR for Dutch banks, GBP for UK banks). Empty cells mean the bank did not publish a comparable figure, or I could not find it in a public source. Negative values are losses.</p>
+      <div class="card">
+        <div class="tools">
+          <input type="search" id="q" placeholder="Search, e.g. NatWest or 2020" aria-label="Search the table">
+          <select id="country" aria-label="Country"><option value="">Both countries</option><option>Netherlands</option><option>United Kingdom</option></select>
+        </div>
+        <div class="tablewrap">
+          <table id="tbl">
+            <thead><tr>
+              <th><button type="button" data-k="bank">Bank</button></th>
+              <th><button type="button" data-k="country">Country</button></th>
+              <th class="n"><button type="button" data-k="year">Year</button></th>
+              <th><button type="button" data-k="currency">Ccy</button></th>
+              <th class="n"><button type="button" data-k="net_interest_income_m">Net interest income (m)</button></th>
+              <th class="n"><button type="button" data-k="net_interest_margin_pct">NIM</button></th>
+              <th class="n"><button type="button" data-k="return_on_equity_pct">Return</button></th>
+              <th><button type="button" data-k="return_measure">Measure</button></th>
+              <th class="n"><button type="button" data-k="net_profit_m">Net profit (m)</button></th>
+              <th><button type="button" data-k="profit_basis">Profit basis</button></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section class="tab" id="method" role="tabpanel" aria-labelledby="t-method" hidden>
+    <div class="section">
+      <h2>Method &amp; caveats</h2>
+      <div class="method">
+        <p><b>Banks.</b> Netherlands: ING, ABN AMRO, Rabobank, de Volksbank (now ASN Bank; called SNS Bank before 2017). United Kingdom: Lloyds, NatWest (called RBS until 2020), Barclays, Santander UK. HSBC is left out because most of its profit comes from Asia.</p>
+        <p><b>Rates.</b> The ECB deposit facility rate is the rate that matters most for euro-area banks with excess reserves. Bank Rate is the Bank of England's policy rate. Both are downloaded every morning from the central banks' own data feeds. Dates are effective dates.</p>
+        <p><b>Years covered.</b> Rates from January 2010. Bank results from 2015, the earliest year with reasonably comparable public reporting for all eight banks. Some early years are missing for Rabobank (2017–2020 income and margin), ABN AMRO (2015 and most of 2016), Barclays (2015 income and return) and Lloyds (2015 return).</p>
+        <p><b>Net interest income.</b> As reported each year. ING includes the TLTRO effect in 2021–22 and excludes it in 2020. Lloyds uses its underlying figure because insurance accounting distorts the statutory one. Rabobank 2022 comes from the EBA stress test. Barclays 2016–17 is restated for the sale of its African business. De Volksbank changed how it presents hedge results in 2025, which adds roughly €110m.</p>
+        <p><b>Returns.</b> Dutch banks report return on equity, UK banks return on tangible equity; compare trends more than levels. ING's 2015–2018 figures are "underlying" (excluding one-offs), as it reported then. Santander UK's 2019–2022 figures are adjusted. Lloyds changed its RoTE basis in 2019 and restated 2022 for IFRS 17.</p>
+        <p><b>Margins.</b> Banks change their margin definitions: NatWest changed its basis in 2021 and again in 2024, and ING's 2015–2018 figures cover the bank only. A sudden jump in one year can be a reporting change rather than a real change.</p>
+        <p><b>Profit.</b> Each bank's headline figure, so definitions differ (see the Profit basis column). Use it to compare years within one bank.</p>
+        <p><b>Index.</b> The income chart sets each bank's first year in the chosen range to 100. A bank missing that year starts from its first available year.</p>
+        <p><b>Causes.</b> The charts show timing and size, not proof of cause. Acquisitions, loan losses, bank taxes, fines and one-off items (such as ING's 2018 settlement and 2022 Russia provisions, or RBS's legacy conduct costs) also move the numbers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOURCES -->
+  <section class="tab" id="sources" role="tabpanel" aria-labelledby="t-sources" hidden>
+    <div class="section">
+      <h2>Sources</h2>
+      <p class="note">All sources are free and public: central bank websites and the banks' own results releases and annual reports.</p>
+      <div class="card">
+        <div class="tablewrap">
+          <table class="src" id="src"><thead><tr><th>Source</th><th>Covers</th><th>Link</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span id="checked">Rates are checked every day against the ECB and Bank of England data feeds.</span>
+  <span>Bank figures from published results, updated after each results season.</span>
+</footer>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div><h2 id="m-title">Chart</h2><p class="note" id="m-note"></p></div>
+      <button class="close" type="button" id="m-close" aria-label="Close">Close ✕</button>
+    </div>
+    <div class="range mpick">
+      <label for="m-from-m">From</label>
+      <span class="pick"><select id="m-from-m" aria-label="From month"></select><select id="m-from-y" aria-label="From year"></select></span>
+      <label for="m-to-m">to</label>
+      <span class="pick"><select id="m-to-m" aria-label="To month"></select><select id="m-to-y" aria-label="To year"></select></span>
+      <span class="quick">
+        <button class="btn" type="button" data-mq="2015">2015–today</button>
+        <button class="btn" type="button" data-mq="2021">Hiking cycle (2021–)</button>
+        <button class="btn" type="button" data-mq="2y">Last 2 years</button>
+        <button class="btn" type="button" data-mq="ly">Last full year</button>
+        <button class="btn" type="button" data-mq="all">All</button>
+      </span>
+    </div>
+    <div class="legend" id="m-legend"></div>
+    <div class="mchart" id="m-chart"></div>
+    <div class="brush-wrap">
+      <div class="mrange"><p class="note">Or drag across the strip below to zoom into a period. Drag the edges to adjust.</p><span class="note" id="m-range"></span></div>
+      <div id="m-brush"></div>
     </div>
   </div>
-
-  <section class="rb-section" id="findings">
-    <h2 class="rb-h2">Key findings</h2>
-    <div class="rb-findings">
-      <div class="rb-finding">
-        <h3>1. The Bank of England moved first and went higher</h3>
-        <p>The BoE started raising rates in <span class="rb-num dash-skeleton" data-source="rate_summary" data-field="boe_first_hike" data-row="0">—</span>, seven months before the ECB (<span class="rb-num dash-skeleton" data-source="rate_summary" data-field="ecb_first_hike" data-row="0">—</span>). It peaked at <span class="rb-num dash-skeleton" data-source="rate_summary" data-field="boe_peak" data-row="0">—</span>, compared with <span class="rb-num dash-skeleton" data-source="rate_summary" data-field="ecb_peak" data-row="0">—</span> for the ECB. Euro rates also started below zero, so Dutch banks began from a weaker position.</p>
-      </div>
-      <div class="rb-finding">
-        <h3>2. UK income grew more on average, but the bank mattered more than the country</h3>
-        <p>From 2021 to <span class="rb-latest">2025</span>, net interest income rose <span class="rb-num dash-skeleton" data-source="nii_growth" data-field="growth_pct" data-where="bank=Barclays">—</span> at Barclays and <span class="rb-num dash-skeleton" data-source="nii_growth" data-field="growth_pct" data-where="bank=NatWest">—</span> at NatWest. Rabobank kept pace with the UK at <span class="rb-num dash-skeleton" data-source="nii_growth" data-field="growth_pct" data-where="bank=Rabobank">—</span>, while ING (<span class="rb-num dash-skeleton" data-source="nii_growth" data-field="growth_pct" data-where="bank=ING">—</span>) and Santander UK (<span class="rb-num dash-skeleton" data-source="nii_growth" data-field="growth_pct" data-where="bank=Santander UK">—</span>) barely grew. Part of the UK growth comes from acquisitions: Barclays bought Tesco Bank's retail business, and NatWest bought Metro Bank mortgages and Sainsbury's Bank's core banking.</p>
-      </div>
-      <div class="rb-finding">
-        <h3>3. When rates fell, Dutch income slipped first</h3>
-        <p>By <span class="rb-latest">2025</span>, ING was <span class="rb-num dash-skeleton" data-source="nii_growth" data-field="pct_from_peak" data-where="bank=ING">—</span>, de Volksbank <span class="rb-num dash-skeleton" data-source="nii_growth" data-field="pct_from_peak" data-where="bank=de Volksbank">—</span> and Rabobank <span class="rb-num dash-skeleton" data-source="nii_growth" data-field="pct_from_peak" data-where="bank=Rabobank">—</span>. NatWest was <span class="rb-num dash-skeleton" data-source="nii_growth" data-field="pct_from_peak" data-where="bank=NatWest">—</span> and Barclays <span class="rb-num dash-skeleton" data-source="nii_growth" data-field="pct_from_peak" data-where="bank=Barclays">—</span>; Lloyds and Santander UK dipped in 2024 and then recovered. A likely reason is the UK "structural hedge": banks lock in rates on stable deposits for several years, so higher rates feed into income slowly and keep coming even after cuts begin.</p>
-      </div>
-      <div class="rb-finding">
-        <h3>4. More income did not always mean better returns</h3>
-        <p>NatWest's return on tangible equity rose from <span class="rb-num dash-skeleton" data-source="roe_change" data-field="roe_2021" data-where="bank=NatWest">—</span> to <span class="rb-num dash-skeleton" data-source="roe_change" data-field="roe_latest" data-where="bank=NatWest">—</span>. At Barclays it fell from <span class="rb-num dash-skeleton" data-source="roe_change" data-field="roe_2021" data-where="bank=Barclays">—</span> to <span class="rb-num dash-skeleton" data-source="roe_change" data-field="roe_latest" data-where="bank=Barclays">—</span>, even though its interest income grew the most. Business mix, costs and loan losses matter as much as rates. Barclays has a large investment bank, while NatWest is mostly UK retail and business banking.</p>
-      </div>
-      <div class="rb-finding">
-        <h3>5. Where rates are now</h3>
-        <p>The ECB last changed its deposit rate in <span class="rb-num dash-skeleton" data-source="rate_summary" data-field="ecb_last_change" data-row="0">—</span>, to <span class="rb-num dash-skeleton" data-source="rate_summary" data-field="ecb_now" data-row="0">—</span>. The Bank of England last moved in <span class="rb-num dash-skeleton" data-source="rate_summary" data-field="boe_last_change" data-row="0">—</span>, to <span class="rb-num dash-skeleton" data-source="rate_summary" data-field="boe_now" data-row="0">—</span>. UK rates are <span class="rb-num dash-skeleton" data-source="rate_summary" data-field="gap_now" data-row="0">—</span> above euro rates. Higher euro rates would help Dutch bank margins; a narrowing gap would erode part of the UK advantage.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="rb-section" id="charts">
-    <h2 class="rb-h2">The data</h2>
-    <div class="rb-grid">
-      <div class="rb-card" id="card-rates">
-        <h3>Policy rates</h3>
-        <p class="rb-note">ECB deposit facility rate and Bank of England Bank Rate, January 2021 to today.</p>
-        <div class="rb-chart" id="rates-chart" data-source="policy_rates"></div>
-      </div>
-      <div class="rb-card" id="card-nii">
-        <h3>Net interest income, indexed (2021 = 100)</h3>
-        <p class="rb-note">Interest earned on loans minus interest paid on deposits. Each bank's 2021 level is set to 100, so euros and pounds can be compared. De Volksbank's 2025 figure uses a new presentation that adds hedge results, which flatters its 2025 level.</p>
-        <div class="rb-legend"><span><span class="rb-swatch" data-color="0"></span>Netherlands</span><span><span class="rb-swatch" data-color="1"></span>United Kingdom</span></div>
-        <div class="rb-chart" id="nii-chart" data-source="nii_index"></div>
-      </div>
-      <div class="rb-card" id="card-roe">
-        <h3>Return on equity</h3>
-        <p class="rb-note">Profit as a share of shareholders' equity. Dutch banks report ROE; UK banks report return on tangible equity (RoTE), which excludes goodwill and is usually a little higher.</p>
-        <div class="rb-legend"><span><span class="rb-swatch" data-color="0"></span>Netherlands (ROE)</span><span><span class="rb-swatch" data-color="1"></span>United Kingdom (RoTE)</span></div>
-        <div class="rb-chart" id="roe-chart" data-source="bank_results"></div>
-      </div>
-      <div class="rb-card" id="card-nim">
-        <h3>Net interest margin</h3>
-        <p class="rb-note">Net interest income as a share of interest-earning assets. NatWest changed its definition in 2024, so its 2023→2024 drop is mostly a reporting change. No public group figure for Barclays or Rabobank; ABN AMRO 2023 not found. De Volksbank's 2025 figure is on a new basis (its 2024 restated to 1.72%).</p>
-        <div class="rb-legend"><span><span class="rb-swatch" data-color="0"></span>Netherlands</span><span><span class="rb-swatch" data-color="1"></span>United Kingdom</span></div>
-        <div class="rb-chart" id="nim-chart" data-source="bank_results"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="rb-section" id="table">
-    <h2 class="rb-h2">All bank figures</h2>
-    <div class="rb-card">
-      <p class="rb-note">Millions in each bank's reporting currency. Click a column to sort. Hover a bank name at the end of a chart line to highlight it.</p>
-      <div class="rb-tablewrap">
-        <table class="rb-table" id="data-table" data-source="bank_results" data-row-key="bank,year">
-          <thead><tr>
-            <th data-field="bank"><button type="button" data-k="bank">Bank</button></th>
-            <th data-field="country"><button type="button" data-k="country">Country</button></th>
-            <th data-field="year" class="num"><button type="button" data-k="year">Year</button></th>
-            <th data-field="currency"><button type="button" data-k="currency">Ccy</button></th>
-            <th data-field="net_interest_income_m" class="num"><button type="button" data-k="net_interest_income_m">Net interest income (m)</button></th>
-            <th data-field="net_interest_margin_pct" class="num"><button type="button" data-k="net_interest_margin_pct">NIM</button></th>
-            <th data-field="return_on_equity_pct" class="num"><button type="button" data-k="return_on_equity_pct">Return</button></th>
-            <th data-field="return_measure"><button type="button" data-k="return_measure">Measure</button></th>
-            <th data-field="net_profit_m" class="num"><button type="button" data-k="net_profit_m">Net profit (m)</button></th>
-            <th data-field="profit_basis"><button type="button" data-k="profit_basis">Profit basis</button></th>
-          </tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <section class="rb-section" id="method">
-    <h2 class="rb-h2">Method and caveats</h2>
-    <div class="rb-method">
-      <p><b>Banks.</b> Netherlands: ING, ABN AMRO, Rabobank, de Volksbank (now ASN Bank). United Kingdom: Lloyds, NatWest, Barclays, Santander UK. HSBC is left out because most of its profit comes from Asia, so UK rates explain little of it.</p>
-      <p><b>Rates.</b> The ECB deposit facility rate is the rate that matters most for euro-area banks with excess reserves. Bank Rate is the Bank of England's policy rate. Dates are effective dates.</p>
-      <p><b>Net interest income.</b> As reported in each bank's results. ING includes the TLTRO effect in 2021–22. Lloyds uses its underlying figure because statutory figures were distorted by insurance accounting (IFRS 17). Rabobank 2022 comes from the EBA stress test (regulatory basis), as its own report was not accessible. De Volksbank changed how it presents hedge results in 2025; its 2025 income is roughly €110m higher than it would be on the old basis (based on the size of the 2024 restatement).</p>
-      <p><b>Returns.</b> Dutch banks report return on equity, UK banks report return on tangible equity. Compare the trends within each country more than the exact levels across countries. Lloyds 2022 is restated for IFRS 17. Santander UK 2021–22 are adjusted RoTE, as it reported then.</p>
-      <p><b>Profit.</b> Each bank's headline figure, so definitions differ slightly (see the Profit basis column). Use it to compare years within one bank.</p>
-      <p><b>Causes.</b> The dashboard shows timing and size, not proof of cause. Acquisitions, loan-loss provisions, bank taxes and one-off items (such as ING's 2022 Russia provisions) also move the numbers.</p>
-    </div>
-  </section>
-
-  <section class="rb-section" id="sources">
-    <h2 class="rb-h2">Sources</h2>
-    <div class="rb-card">
-      <div class="rb-tablewrap">
-        <table class="rb-table rb-sources" id="sources-table" data-source="sources" data-row-key="source">
-          <thead><tr><th data-field="source">Source</th><th data-field="covers">Covers</th><th data-field="url">Link</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <footer class="rb-foot">
-    <span id="rates-checked">Rates are checked every day against the ECB and Bank of England data feeds.</span>
-    <span>Bank figures from published annual results, updated by hand after each results season.</span>
-  </footer>
 </div>
 
 <script>
-dash.calc('rate_summary', {
-  inputs: ['policy_rates'],
-  title: 'Policy rate summary',
-  description: 'Peak rate, first hike date and latest rate for the ECB and the Bank of England.',
-  fn: (policy_rates) => {
-    const r = policy_rates.map(d => ({ date: d.date, ecb: Number(d.ecb_deposit_rate), boe: Number(d.boe_bank_rate) }));
-    const firstHike = k => { for (let i = 1; i < r.length; i++) if (r[i][k] > r[i - 1][k]) return r[i].date; return null; };
-    const last = r[r.length - 1];
-    const lastChange = k => { for (let i = r.length - 1; i > 0; i--) if (r[i][k] !== r[i - 1][k]) return r[i].date; return r[0].date; };
-    return [{
-      ecb_peak: Math.max(...r.map(d => d.ecb)), boe_peak: Math.max(...r.map(d => d.boe)),
-      ecb_first_hike: firstHike('ecb'), boe_first_hike: firstHike('boe'),
-      ecb_now: last.ecb, boe_now: last.boe,
-      ecb_last_change: lastChange('ecb'), boe_last_change: lastChange('boe'),
-      gap_now: Math.round((last.boe - last.ecb) * 100) / 100
-    }];
-  }
-});
-
-dash.calc('nii_index', {
-  inputs: ['bank_results'],
-  title: 'Net interest income index',
-  description: 'Each bank\'s net interest income divided by its 2021 level, times 100.',
-  fn: (bank_results) => {
-    const rows = bank_results.filter(d => d.net_interest_income_m !== '' && d.net_interest_income_m != null);
-    const base = {};
-    rows.forEach(d => { if (Number(d.year) === 2021) base[d.bank] = Number(d.net_interest_income_m); });
-    return rows.filter(d => base[d.bank]).map(d => ({
-      bank: d.bank, country: d.country, year: Number(d.year),
-      index: Math.round(Number(d.net_interest_income_m) / base[d.bank] * 1000) / 10
-    }));
-  }
-});
-
-dash.calc('nii_growth', {
-  inputs: ['nii_index'],
-  title: 'Net interest income growth by bank',
-  description: 'Growth from 2021 to the latest year, the peak year, and how far the latest year sits below the peak.',
-  fn: (nii_index) => {
-    const banks = [...new Set(nii_index.map(d => d.bank))];
-    return banks.map(b => {
-      const s = nii_index.filter(d => d.bank === b);
-      const end = s.reduce((a, d) => d.year > a.year ? d : a, s[0]).index;
-      const peak = s.reduce((a, d) => d.index > a.index ? d : a, s[0]);
-      return { bank: b, country: s[0].country, growth_pct: Math.round(end - 100), peak_year: peak.year,
-        pct_from_peak: Math.round((end / peak.index - 1) * 1000) / 10 };
-    });
-  }
-});
-
-dash.calc('country_growth', {
-  inputs: ['nii_growth'],
-  title: 'Average income growth by country',
-  description: 'Simple average of each country\'s banks\' net interest income growth from 2021 to the latest year.',
-  fn: (nii_growth) => {
-    const cs = [...new Set(nii_growth.map(d => d.country))];
-    return cs.map(c => {
-      const s = nii_growth.filter(d => d.country === c);
-      return { country: c, avg_growth_pct: Math.round(s.reduce((a, d) => a + d.growth_pct, 0) / s.length) };
-    });
-  }
-});
-
-dash.calc('roe_change', {
-  inputs: ['bank_results'],
-  title: 'Return on equity, 2021 vs latest year',
-  description: 'Each bank\'s reported ROE or RoTE in 2021 and the latest year.',
-  fn: (bank_results) => {
-    const banks = [...new Set(bank_results.map(d => d.bank))];
-    return banks.map(b => {
-      const s = bank_results.filter(d => d.bank === b);
-      const at = y => Number(s.find(d => Number(d.year) === y).return_on_equity_pct);
-      const ly = Math.max(...s.map(d => Number(d.year)));
-      return { bank: b, roe_2021: at(2021), roe_latest: at(ly), change_pp: Math.round((at(ly) - at(2021)) * 10) / 10 };
-    });
-  }
-});
-
 (function () {
-  const root = document.querySelector('.rb');
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const NL = 'Netherlands';
-  const col = c => c === NL ? dash.colors[0] : dash.colors[1];
-  root.querySelectorAll('.rb-swatch[data-color]').forEach(s => { s.style.background = dash.colors[Number(s.dataset.color)]; });
+  const col = c => css(c === NL ? '--nl' : '--uk');
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const minus = s => String(s).replace('-', '−');
+  const pct = (v, d = 2) => v == null || isNaN(v) ? '—' : minus(d3.format(`.${d}f`)(v) + '%');
+  const signed = v => v == null || isNaN(v) ? '—' : (v > 0 ? '+' : '') + minus(Math.round(v)) + '%';
+  const monthYear = d => d ? d3.utcFormat('%b %Y')(d) : '—';
+  const num = v => v === '' || v == null ? null : Number(v);
 
-  const minus = s => s.replace('-', '−');
-  const fmtRate = v => minus(d3.format('.2f')(v) + '%');
-  const fmtSigned = v => (v > 0 ? '+' : '') + minus(String(v)) + '%';
-  const fmtMonth = s => d3.utcFormat('%b %Y')(new Date(s));
-  const FORMAT = {
-    boe_peak: fmtRate, ecb_peak: fmtRate, boe_now: fmtRate, ecb_now: fmtRate,
-    boe_first_hike: fmtMonth, ecb_first_hike: fmtMonth,
-    avg_growth_pct: fmtSigned, growth_pct: fmtSigned, pct_from_peak: v => Number(v) === 0 ? 'at a record high' : String(Math.abs(v)) + '% below its peak',
-    peak_year: v => String(v), roe_2021: v => d3.format('.1f')(v) + '%', roe_latest: v => d3.format('.1f')(v) + '%',
-    ecb_last_change: fmtMonth, boe_last_change: fmtMonth, gap_now: v => d3.format('.2f')(v) + ' pp'
-  };
+  // ---------- Tabs ----------
+  const TABS = ['overview', 'charts', 'figures', 'method', 'sources'];
+  function showTab(name, push) {
+    if (!TABS.includes(name)) name = 'overview';
+    TABS.forEach(t => {
+      $('#' + t).hidden = t !== name;
+      $('#t-' + t).setAttribute('aria-selected', t === name ? 'true' : 'false');
+    });
+    if (push) history.replaceState(null, '', '#' + name);
+    if (name === 'charts') drawCharts();
+    window.scrollTo({ top: 0 });
+  }
+  $$('.tab-btn').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab, true)));
+  $$('[data-go]').forEach(b => b.addEventListener('click', () => showTab(b.dataset.go, true)));
 
-  function parseWhere(w) {
-    const o = {};
-    w.split('&').forEach(p => { const i = p.indexOf('='); o[decodeURIComponent(p.slice(0, i))] = decodeURIComponent(p.slice(i + 1)); });
-    return o;
+  // ---------- Data ----------
+  let RATES = [], BANKS = [], SOURCES = [];
+  let BANK_LIST = [];
+  const hidden = new Set();
+  const today = new Date();
+  const state = { from: null, to: null };
+
+  Promise.all([
+    d3.csv('data/policy_rates.csv?v=' + Date.now()),
+    d3.csv('data/bank_results.csv?v=' + Date.now()),
+    d3.csv('data/sources.csv?v=' + Date.now()),
+    fetch('data/meta.json?v=' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null)
+  ]).then(([r, b, s, meta]) => {
+    RATES = r.map(d => ({ date: new Date(d.date + 'T00:00:00Z'), ecb: +d.ecb_deposit_rate, boe: +d.boe_bank_rate }));
+    BANKS = b.map(d => ({ ...d, year: +d.year, nii: num(d.net_interest_income_m), roe: num(d.return_on_equity_pct), nim: num(d.net_interest_margin_pct), profit: num(d.net_profit_m) }));
+    SOURCES = s;
+    BANK_LIST = [...new Map(BANKS.map(d => [d.bank, d.country])).entries()].map(([bank, country]) => ({ bank, country }));
+    if (meta && meta.rates_checked_at) {
+      $('#checked').textContent = 'Rates last checked ' + d3.utcFormat('%-d %b %Y, %H:%M UTC')(new Date(meta.rates_checked_at)) +
+        (meta.rates_status === 'ok' ? '.' : ' (latest check failed; showing last good data).');
+    }
+    initControls();
+    fillFindings();
+    drawTable();
+    drawSources();
+    showTab(location.hash.slice(1) || 'overview', false);
+  }).catch(err => {
+    console.error(err);
+    $('#overview').insertAdjacentHTML('afterbegin', '<p class="note">The data could not be loaded. Please refresh the page.</p>');
+  });
+
+  // ---------- Findings ----------
+  function fillFindings() {
+    const K = {};
+    const since21 = RATES.filter(d => d.date >= new Date('2021-01-01T00:00:00Z'));
+    const firstHike = k => { for (let i = 1; i < RATES.length; i++) if (RATES[i].date >= new Date('2021-01-01T00:00:00Z') && RATES[i][k] > RATES[i - 1][k]) return RATES[i].date; return null; };
+    const lastChange = k => { for (let i = RATES.length - 1; i > 0; i--) if (RATES[i][k] !== RATES[i - 1][k]) return RATES[i].date; return null; };
+    const last = RATES[RATES.length - 1];
+    K.boe_peak = pct(d3.max(since21, d => d.boe)); K.ecb_peak = pct(d3.max(since21, d => d.ecb));
+    K.boe_first_hike = monthYear(firstHike('boe')); K.ecb_first_hike = monthYear(firstHike('ecb'));
+    K.boe_now = pct(last.boe); K.ecb_now = pct(last.ecb);
+    K.boe_last = monthYear(lastChange('boe')); K.ecb_last = monthYear(lastChange('ecb'));
+    K.gap_now = d3.format('.2f')(last.boe - last.ecb) + ' pp';
+    const negStart = RATES.find(d => d.ecb < 0);
+    const negEnd = negStart && RATES.find(d => d.date > negStart.date && d.ecb >= 0);
+    K.neg_from = monthYear(negStart && negStart.date); K.neg_to = monthYear(negEnd && negEnd.date);
+    K.neg_years = negStart && negEnd ? String(Math.round((negEnd.date - negStart.date) / (365.25 * 864e5))) : '—';
+    K.ecb_min = pct(d3.min(RATES, d => d.ecb));
+    K.boe_low_max = pct(d3.max(RATES.filter(d => d.date < new Date('2021-12-01T00:00:00Z')), d => d.boe));
+    const latest = d3.max(BANKS, d => d.year); K.latest = String(latest);
+    const val = (bank, y, f) => { const r = BANKS.find(d => d.bank === bank && d.year === y); return r ? r[f] : null; };
+    const growth = (bank, a, b) => { const x = val(bank, a, 'nii'), y = val(bank, b, 'nii'); return x && y ? (y / x - 1) * 100 : null; };
+    BANK_LIST.forEach(({ bank }) => {
+      K['g1520_' + bank] = signed(growth(bank, 2015, 2020));
+      K['g21_' + bank] = signed(growth(bank, 2021, latest));
+      const s = BANKS.filter(d => d.bank === bank && d.year >= 2021 && d.nii != null);
+      if (s.length) {
+        const peak = d3.max(s, d => d.nii), end = val(bank, latest, 'nii');
+        const p = Math.round((end / peak - 1) * 1000) / 10;
+        K['fp_' + bank] = p === 0 ? 'at a record high' : Math.abs(p) + '% below its peak';
+      }
+    });
+    const avg = c => { const v = BANK_LIST.filter(b => b.country === c).map(b => growth(b.bank, 2021, latest)).filter(v => v != null); return d3.mean(v); };
+    K.uk_growth = signed(avg('United Kingdom')); K.nl_growth = signed(avg(NL));
+    const ingNim = BANKS.filter(d => d.bank === 'ING' && d.year >= 2015 && d.year <= 2020 && d.nim != null).map(d => d.nim);
+    K.ing_nim_1520 = ingNim.length ? pct(d3.mean(ingNim), 1) : '—';
+    K.nw_2016 = pct(val('NatWest', 2016, 'roe'), 1); K.nw_latest = pct(val('NatWest', latest, 'roe'), 1);
+    K.bc_2021 = pct(val('Barclays', 2021, 'roe'), 1); K.bc_latest = pct(val('Barclays', latest, 'roe'), 1);
+    $$('[data-k]').forEach(el => { if (el.closest('thead')) return; const v = K[el.dataset.k]; if (v != null) el.textContent = v; });
   }
 
-  function fillMarks() {
-    root.querySelectorAll('[data-source][data-field]:not(th)').forEach(el => {
-      const st = dash.data(el.dataset.source);
-      if (st.status !== 'ok') { if (st.status === 'error') el.classList.remove('dash-skeleton'); el.textContent = '—'; return; }
-      const rows = st.data || [];
-      let row;
-      if (el.dataset.row != null) row = rows[Number(el.dataset.row)];
-      else if (el.dataset.where) { const w = parseWhere(el.dataset.where); row = rows.find(r => Object.keys(w).every(k => String(r[k]) === w[k])); }
-      el.classList.remove('dash-skeleton');
-      const v = row ? row[el.dataset.field] : null;
-      el.textContent = v == null || v === '' ? '—' : (FORMAT[el.dataset.field] ? FORMAT[el.dataset.field](v) : String(v));
+  // ---------- Range controls ----------
+  const startOfMonth = (y, m) => new Date(Date.UTC(y, m, 1));
+  const endOfMonth = (y, m) => new Date(Date.UTC(y, m + 1, 0));
+  function initControls() {
+    const y0 = RATES[0].date.getUTCFullYear(), y1 = today.getUTCFullYear();
+    const years = d3.range(y0, y1 + 1);
+    ['#from-m', '#to-m'].forEach(s => { $(s).innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join(''); });
+    ['#from-y', '#to-y'].forEach(s => { $(s).innerHTML = years.map(y => `<option>${y}</option>`).join(''); });
+    ['#m-from-m', '#m-to-m'].forEach(s => { $(s).innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join(''); });
+    ['#m-from-y', '#m-to-y'].forEach(s => { $(s).innerHTML = years.map(y => `<option>${y}</option>`).join(''); });
+    ['#m-from-m', '#m-from-y', '#m-to-m', '#m-to-y'].forEach(s => $(s).addEventListener('change', () => {
+      let f = startOfMonth(+$('#m-from-y').value, +$('#m-from-m').value), t = endOfMonth(+$('#m-to-y').value, +$('#m-to-m').value);
+      if (f > t) [f, t] = [startOfMonth(t.getUTCFullYear(), t.getUTCMonth()), endOfMonth(f.getUTCFullYear(), f.getUTCMonth())];
+      setModalRange(f, t, null, true);
+    }));
+    $$('[data-mq]').forEach(b => b.addEventListener('click', () => { const [f, t] = quickRange(b.dataset.mq); setModalRange(f, t, b.dataset.mq, true); }));
+    setRange(startOfMonth(2015, 0), endOfMonth(y1, today.getUTCMonth()), '2015');
+    ['#from-m', '#from-y', '#to-m', '#to-y'].forEach(s => $(s).addEventListener('change', () => {
+      let f = startOfMonth(+$('#from-y').value, +$('#from-m').value), t = endOfMonth(+$('#to-y').value, +$('#to-m').value);
+      if (f > t) [f, t] = [startOfMonth(t.getUTCFullYear(), t.getUTCMonth()), endOfMonth(f.getUTCFullYear(), f.getUTCMonth())];
+      setRange(f, t, null);
+    }));
+    $$('#quick [data-q]').forEach(b => b.addEventListener('click', () => {
+      const [f, t] = quickRange(b.dataset.q); setRange(f, t, b.dataset.q);
+    }));
+    const chips = $('#chips');
+    BANK_LIST.forEach(({ bank, country }) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', 'true');
+      const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = `var(${country === NL ? '--nl' : '--uk'})`; sw.style.marginRight = '0';
+      b.append(sw, document.createTextNode(bank));
+      b.addEventListener('click', () => {
+        if (hidden.has(bank)) hidden.delete(bank); else hidden.add(bank);
+        b.setAttribute('aria-pressed', hidden.has(bank) ? 'false' : 'true');
+        drawCharts();
+      });
+      chips.appendChild(b);
+    });
+    $$('[data-open]').forEach(el => el.addEventListener('click', () => openModal(el.dataset.open)));
+    const JUMP = { boe: ['rates', 'BoE', 'Bank of England Bank Rate'], ecb: ['rates', 'ECB', 'ECB deposit facility rate'], uk: ['nii', 'United Kingdom', 'UK banks: net interest income, indexed'], nl: ['nii', NL, 'Dutch banks: net interest income, indexed'] };
+    $$('[data-jump]').forEach(el => {
+      const go = () => {
+        const [key, focus, title] = JUMP[el.dataset.jump];
+        showTab('charts', true);
+        setRange(startOfMonth(2015, 0), endOfMonth(today.getUTCFullYear(), today.getUTCMonth()), '2015');
+        openModal(key, focus);
+        $('#m-title').textContent = title;
+        $('#m-note').textContent = (key === 'nii' ? 'The headline box measures 2021 to the latest year; this chart starts in 2015 (2015 = 100). ' : '') + 'Other lines are faded; hover a name to highlight it. Change the period with the dates above or the strip below.';
+      };
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
     });
   }
+  function quickRange(q) {
+    const ty = today.getUTCFullYear(), tm = today.getUTCMonth(), y0 = RATES[0].date.getUTCFullYear();
+    if (q === 'all') return [startOfMonth(y0, 0), endOfMonth(ty, tm)];
+    if (q === '2021') return [startOfMonth(2021, 0), endOfMonth(ty, tm)];
+    if (q === '2y') return [startOfMonth(ty - 2, tm), endOfMonth(ty, tm)];
+    if (q === 'ly') return [startOfMonth(ty - 1, 0), endOfMonth(ty - 1, 11)];
+    return [startOfMonth(2015, 0), endOfMonth(ty, tm)];
+  }
+  function setRange(f, t, q) {
+    state.from = f; state.to = t;
+    $('#from-m').value = f.getUTCMonth(); $('#from-y').value = f.getUTCFullYear();
+    $('#to-m').value = t.getUTCMonth(); $('#to-y').value = t.getUTCFullYear();
+    $$('#quick [data-q]').forEach(b => b.setAttribute('aria-pressed', b.dataset.q === q ? 'true' : 'false'));
+    drawCharts();
+  }
 
-  // Generic line chart with end labels, hover tooltip and gaps for missing values.
+  // ---------- Chart definitions ----------
+  const DEFS = {
+    rates: { title: 'Policy rates', note: 'ECB deposit facility rate and Bank of England Bank Rate.', time: true, legend: [['--uk', 'Bank of England'], ['--nl', 'ECB']] },
+    nii: { title: 'Net interest income, indexed', note: "Each bank's first year in the range shown = 100.", legend: [['--nl', 'Netherlands'], ['--uk', 'United Kingdom']] },
+    roe: { title: 'Return on equity', note: 'ROE for Dutch banks, RoTE for UK banks.', legend: [['--nl', 'Netherlands (ROE)'], ['--uk', 'United Kingdom (RoTE)']] },
+    nim: { title: 'Net interest margin', note: 'Net interest income as a share of interest-earning assets. Definitions change over time.', legend: [['--nl', 'Netherlands'], ['--uk', 'United Kingdom']] }
+  };
+  function seriesFor(key, from, to) {
+    if (key === 'rates') {
+      const inR = RATES.filter(d => d.date > from && d.date <= to);
+      const before = [...RATES].reverse().find(d => d.date <= from);
+      const pts = [];
+      if (before) pts.push({ ...before, date: from });
+      pts.push(...inR);
+      const end = to < today ? to : new Date(Math.min(+to, +RATES[RATES.length - 1].date));
+      if (pts.length && +pts[pts.length - 1].date < +end) pts.push({ ...pts[pts.length - 1], date: end });
+      return [
+        { name: 'BoE', group: 'BoE', color: css('--uk'), values: pts.map(p => ({ x: p.date, y: p.boe })) },
+        { name: 'ECB', group: 'ECB', color: css('--nl'), values: pts.map(p => ({ x: p.date, y: p.ecb })) }
+      ];
+    }
+    const y0 = from.getUTCFullYear(), y1 = to.getUTCFullYear();
+    const field = { nii: 'nii', roe: 'roe', nim: 'nim' }[key];
+    return BANK_LIST.filter(b => !hidden.has(b.bank)).map(({ bank, country }) => {
+      let rows = BANKS.filter(d => d.bank === bank && d.year >= y0 && d.year <= y1).sort((a, b) => a.year - b.year);
+      let values = rows.map(d => ({ x: d.year, y: d[field] }));
+      if (key === 'nii') {
+        const base = values.find(v => v.y != null);
+        values = values.map(v => ({ x: v.x, y: base && v.y != null ? Math.round(v.y / base.y * 1000) / 10 : null }));
+      }
+      return { name: bank, group: country, color: col(country), values };
+    }).filter(s => s.values.filter(v => v.y != null).length >= (key === 'nii' ? 2 : 1));
+  }
+  const FMT = { rates: v => minus(d3.format('.2~f')(v) + '%'), nii: v => d3.format('.0f')(v), roe: v => minus(d3.format('.1f')(v) + '%'), nim: v => d3.format('.2f')(v) + '%' };
+
+  function render(box, key, from, to, height, focus) {
+    const series = seriesFor(key, from, to);
+    if (!series.length) { box.innerHTML = '<div class="empty">No data in this period. Bank results start in 2015 and are yearly; widen the range or switch banks back on.</div>'; return; }
+    if (key === 'rates') {
+      const lastStep = { x: series[0].values[series[0].values.length - 1].x };
+      return lineChart(box, { series, time: true, step: true, xDomain: [series[0].values[0].x, lastStep.x], yFmt: FMT.rates, ref: 0, height, focus });
+    }
+    const years = series.flatMap(s => s.values.filter(v => v.y != null).map(v => v.x));
+    const dom = d3.extent(years);
+    return lineChart(box, { series, xDomain: dom, yFmt: FMT[key], ref: key === 'nii' ? 100 : (key === 'roe' ? 0 : null), height, focus });
+  }
+
+  function drawCharts() {
+    if ($('#charts').hidden || !RATES.length) return;
+    ['rates', 'nii', 'roe', 'nim'].forEach(k => render($('#c-' + k), k, state.from, state.to, 320));
+  }
+
+  // ---------- Line chart ----------
   function lineChart(box, opt) {
     box.innerHTML = '';
     const W = Math.max(280, box.clientWidth), H = opt.height || 300;
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
     const all = opt.series.flatMap(s => s.values.filter(v => v.y != null && !isNaN(v.y)));
-    const yExt = d3.extent(all, d => d.y);
-    const pad = (yExt[1] - yExt[0]) * 0.08 || 1;
-    const y = d3.scaleLinear([opt.yMin != null ? Math.min(opt.yMin, yExt[0]) : yExt[0] - pad, yExt[1] + pad], [H - 28, 12]).nice();
-    // measure labels
+    let [ymin, ymax] = d3.extent(all, d => d.y);
+    if (opt.ref != null) { ymin = Math.min(ymin, opt.ref); ymax = Math.max(ymax, opt.ref); }
+    const pad = (ymax - ymin) * 0.08 || 1;
+    const y = d3.scaleLinear([ymin - pad, ymax + pad], [H - 28, 12]).nice();
+    const yt = y.ticks(5);
     const meas = svg.append('g').attr('font-size', 12);
-    const tickW = d3.max(y.ticks(5), t => meas.append('text').text(opt.yFmt(t)).node().getComputedTextLength());
-    const ends = opt.series.map(s => {
-      const def = s.values.filter(v => v.y != null && !isNaN(v.y));
-      const last = def[def.length - 1];
-      return { s, last, label: `${s.name} ${opt.yFmt(last.y)}` };
-    });
+    const tickW = d3.max(yt, t => meas.append('text').text(opt.yFmt(t)).node().getComputedTextLength());
+    const ends = opt.series.map(s => { const def = s.values.filter(v => v.y != null && !isNaN(v.y)); const last = def[def.length - 1]; return { s, last, label: `${s.name} ${opt.yFmt(last.y)}` }; });
     const labW = d3.max(ends, e => meas.append('text').text(e.label).node().getComputedTextLength());
     meas.remove();
     const m = { l: tickW + 10, r: labW + 14 };
-    const x = opt.time
-      ? d3.scaleUtc(opt.xDomain, [m.l, W - m.r])
-      : d3.scaleLinear(opt.xDomain, [m.l, W - m.r]);
-
-    const g = svg.append('g');
-    g.append('g').selectAll('line').data(y.ticks(5)).join('line')
-      .attr('x1', m.l).attr('x2', W - m.r).attr('y1', d => y(d)).attr('y2', d => y(d))
-      .attr('stroke', 'var(--cds-chart-grid)').attr('stroke-width', 1);
-    g.append('g').selectAll('text').data(y.ticks(5)).join('text')
-      .attr('x', m.l - 8).attr('y', d => y(d)).attr('dy', '0.32em').attr('text-anchor', 'end')
-      .attr('fill', 'var(--color-fg-muted)').attr('font-size', 12).text(d => opt.yFmt(d));
-    if (opt.ref != null) {
-      g.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(opt.ref)).attr('y2', y(opt.ref))
-        .attr('stroke', 'var(--cds-chart-reference)').attr('stroke-dasharray', '4 3');
+    let x;
+    if (opt.time) x = d3.scaleUtc(opt.xDomain, [m.l, W - m.r]);
+    else {
+      const [a, b] = opt.xDomain;
+      x = d3.scaleLinear(a === b ? [a - 0.5, b + 0.5] : [a, b], [m.l, W - m.r]);
     }
-    const xt = opt.time ? x.ticks(W < 480 ? 4 : 6) : d3.range(opt.xDomain[0], opt.xDomain[1] + 1);
-    const xf = opt.time ? d3.utcFormat('%Y') : d3.format('d');
-    g.append('g').selectAll('text').data(xt).join('text')
-      .attr('x', d => x(d)).attr('y', H - 8).attr('text-anchor', 'middle')
-      .attr('fill', 'var(--color-fg-muted)').attr('font-size', 12).text(d => xf(d));
-    g.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', H - 28).attr('y2', H - 28).attr('stroke', 'var(--cds-chart-axis)');
-
+    const g = svg.append('g');
+    g.append('g').selectAll('line').data(yt).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', d => y(d)).attr('y2', d => y(d)).attr('stroke', css('--grid'));
+    g.append('g').selectAll('text').data(yt).join('text').attr('x', m.l - 8).attr('y', d => y(d)).attr('dy', '0.32em').attr('text-anchor', 'end').attr('fill', css('--muted')).attr('font-size', 12).text(d => opt.yFmt(d));
+    if (opt.ref != null) g.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y(opt.ref)).attr('y2', y(opt.ref)).attr('stroke', css('--ref')).attr('stroke-dasharray', '4 3');
+    let xt, xf;
+    if (opt.time) {
+      const spanDays = (opt.xDomain[1] - opt.xDomain[0]) / 864e5;
+      const room = Math.max(2, Math.floor((W - m.l - m.r) / 70));
+      if (spanDays > 900) {
+        const k = Math.max(1, Math.ceil((spanDays / 365.25) / room));
+        xt = x.ticks(d3.utcYear.every(k)); xf = d3.utcFormat('%Y');
+      } else {
+        const months = Math.max(1, Math.round(spanDays / 30.4));
+        xt = x.ticks(d3.utcMonth.every(Math.max(1, Math.ceil(months / room)))); xf = d3.utcFormat('%b %Y');
+      }
+    } else {
+      const [a, b] = opt.xDomain, n = b - a + 1, room = Math.floor((W - m.l - m.r) / 44);
+      const step = Math.max(1, Math.ceil(n / Math.max(1, room)));
+      xt = d3.range(a, b + 1).filter(v => (v - a) % step === 0);
+      xf = d3.format('d');
+    }
+    g.append('g').selectAll('text').data(xt).join('text').attr('x', d => x(d)).attr('y', H - 8).attr('text-anchor', 'middle').attr('fill', css('--muted')).attr('font-size', 12).text(d => xf(d));
+    g.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', H - 28).attr('y2', H - 28).attr('stroke', css('--axis'));
     const line = d3.line().defined(d => d.y != null && !isNaN(d.y)).x(d => x(d.x)).y(d => y(d.y));
     if (opt.step) line.curve(d3.curveStepAfter);
     opt.series.forEach(s => {
-      g.append('path').attr('class', 'rb-line').attr('data-name', s.name).attr('d', line(s.values)).attr('fill', 'none').attr('stroke', s.color)
-        .attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
-      if (!opt.step) g.append('g').attr('class', 'rb-ptg').attr('data-name', s.name).selectAll('circle').data(s.values.filter(v => v.y != null && !isNaN(v.y))).join('circle')
-        .attr('cx', d => x(d.x)).attr('cy', d => y(d.y)).attr('r', 2.5).attr('fill', s.color);
+      g.append('path').attr('class', 'ln').attr('data-name', s.name).attr('d', line(s.values)).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+      if (!opt.step) g.append('g').attr('class', 'pts').attr('data-name', s.name).selectAll('circle').data(s.values.filter(v => v.y != null && !isNaN(v.y))).join('circle').attr('cx', d => x(d.x)).attr('cy', d => y(d.y)).attr('r', 2.5).attr('fill', s.color);
     });
-
-    // end labels, dodged
     const placed = ends.map(e => ({ ...e, ty: y(e.last.y) })).sort((a, b) => a.ty - b.ty);
     const GAP = 14, TOP = 10, BOT = H - 30;
     for (let i = 1; i < placed.length; i++) placed[i].ty = Math.max(placed[i].ty, placed[i - 1].ty + GAP);
-    if (placed.length && placed[placed.length - 1].ty > BOT) {
-      placed[placed.length - 1].ty = BOT;
-      for (let i = placed.length - 2; i >= 0; i--) placed[i].ty = Math.min(placed[i].ty, placed[i + 1].ty - GAP);
-    }
-    if (placed.length && placed[0].ty < TOP) {
-      placed[0].ty = TOP;
-      for (let i = 1; i < placed.length; i++) placed[i].ty = Math.max(placed[i].ty, placed[i - 1].ty + GAP);
-    }
-    g.append('g').selectAll('text').data(placed).join('text')
-      .attr('x', W - m.r + 8).attr('y', d => d.ty).attr('dy', '0.32em')
-      .attr('class', 'rb-end').attr('data-name', d => d.s.name)
-      .attr('fill', d => d.s.color).attr('font-size', 12).attr('font-weight', 500).text(d => d.label)
-      .on('pointerenter', (ev, d) => {
-        g.selectAll('.rb-line, .rb-ptg, .rb-end').style('opacity', function () { return this.getAttribute('data-name') === d.s.name ? 1 : 0.15; });
-      })
-      .on('pointerleave', () => { g.selectAll('.rb-line, .rb-ptg, .rb-end').style('opacity', null); });
-
+    if (placed.length && placed[placed.length - 1].ty > BOT) { placed[placed.length - 1].ty = BOT; for (let i = placed.length - 2; i >= 0; i--) placed[i].ty = Math.min(placed[i].ty, placed[i + 1].ty - GAP); }
+    if (placed.length && placed[0].ty < TOP) { placed[0].ty = TOP; for (let i = 1; i < placed.length; i++) placed[i].ty = Math.max(placed[i].ty, placed[i - 1].ty + GAP); }
+    const groupOf = n => (opt.series.find(s => s.name === n) || {}).group;
+    const base = function () { return opt.focus && groupOf(this.getAttribute('data-name')) !== opt.focus ? 0.15 : null; };
+    const hl = name => g.selectAll('.ln, .pts, .end').style('opacity', function () { return name == null ? base.call(this) : (this.getAttribute('data-name') === name ? null : 0.15); });
+    g.append('g').selectAll('text').data(placed).join('text').attr('class', 'end').attr('data-name', d => d.s.name)
+      .attr('x', W - m.r + 8).attr('y', d => d.ty).attr('dy', '0.32em').attr('fill', d => d.s.color).attr('font-size', 12).attr('font-weight', 500).text(d => d.label)
+      .on('pointerenter', (ev, d) => hl(d.s.name)).on('pointerleave', () => hl(null));
+    hl(null);
     // hover
-    const tip = d3.select(box).append('div').attr('class', 'rb-tip').style('display', 'none');
-    const rule = g.append('line').attr('y1', 12).attr('y2', H - 28).attr('stroke', 'var(--cds-chart-axis)').style('display', 'none');
+    const tip = d3.select(box).append('div').attr('class', 'tip').style('display', 'none');
+    const rule = g.append('line').attr('y1', 12).attr('y2', H - 28).attr('stroke', css('--axis')).style('display', 'none');
     const dots = g.append('g');
     const xs = [...new Set(opt.series.flatMap(s => s.values.map(v => +v.x)))].sort((a, b) => a - b);
-    svg.append('rect').attr('x', m.l).attr('y', 0).attr('width', W - m.l - m.r).attr('height', H - 28)
-      .attr('fill', 'transparent')
+    svg.append('rect').attr('x', m.l).attr('y', 0).attr('width', Math.max(0, W - m.l - m.r)).attr('height', H - 28).attr('fill', 'transparent')
       .on('pointermove', ev => {
         const [px] = d3.pointer(ev);
-        const xv = x.invert(px);
-        let xi = +xv;
-        if (opt.time) { const i = d3.bisectRight(xs, +xv) - 1; xi = xs[Math.max(0, i)]; }
-        else xi = Math.round(xv);
+        const xv = +x.invert(px);
+        let xi;
+        if (opt.time) { const i = d3.bisectRight(xs, xv) - 1; xi = xs[Math.max(0, i)]; }
+        else xi = xs.reduce((a, b) => Math.abs(b - xv) < Math.abs(a - xv) ? b : a, xs[0]);
         const pts = opt.series.map(s => {
           let v;
           if (opt.time) { const vs = s.values.filter(p => +p.x <= xi); v = vs[vs.length - 1]; }
@@ -479,142 +681,130 @@ dash.calc('roe_change', {
         }).filter(p => p.v && p.v.y != null && !isNaN(p.v.y)).sort((a, b) => b.v.y - a.v.y);
         const cx = x(opt.time ? new Date(xi) : xi);
         rule.style('display', null).attr('x1', cx).attr('x2', cx);
-        dots.selectAll('circle').data(pts).join('circle').attr('cx', cx).attr('cy', p => y(p.v.y)).attr('r', 4)
-          .attr('fill', p => p.s.color).attr('stroke', 'var(--color-panel)').attr('stroke-width', 1.5);
+        dots.selectAll('circle').data(pts).join('circle').attr('cx', cx).attr('cy', p => y(p.v.y)).attr('r', 4).attr('fill', p => p.s.color).attr('stroke', css('--panel')).attr('stroke-width', 1.5);
         tip.style('display', null).html('');
-        tip.append('div').attr('class', 't-head').text(opt.time ? d3.utcFormat('%-d %b %Y')(new Date(xi)) : String(xi));
-        pts.forEach(p => {
-          const r = tip.append('div').attr('class', 't-row');
-          r.append('span').attr('class', 'rb-swatch').style('background', p.s.color);
-          r.append('span').text(p.s.name);
-          r.append('b').text(opt.yFmt(p.v.y));
-        });
-        const bw = box.clientWidth, tw = tip.node().offsetWidth;
-        const left = cx * (bw / W);
-        tip.style('left', (left + 12 + tw > bw ? left - tw - 12 : left + 12) + 'px').style('top', '8px');
+        tip.append('div').attr('class', 'h').text(opt.time ? d3.utcFormat('%-d %b %Y')(new Date(xi)) : String(xi));
+        pts.forEach(p => { const r = tip.append('div').attr('class', 'r'); r.append('span').attr('class', 'sw').style('background', p.s.color); r.append('span').text(p.s.name); r.append('b').text(opt.yFmt(p.v.y)); });
+        const bw = box.clientWidth, tw = tip.node().offsetWidth, left = cx * (bw / W);
+        tip.style('left', (left + 12 + tw > bw ? Math.max(0, left - tw - 12) : left + 12) + 'px').style('top', '8px');
       })
       .on('pointerleave', () => { tip.style('display', 'none'); rule.style('display', 'none'); dots.selectAll('*').remove(); });
   }
 
-  function failBox(box) { box.innerHTML = ''; const d = document.createElement('div'); d.className = 'rb-fail'; d.textContent = 'Failed to load'; box.appendChild(d); }
-
-  function drawRates() {
-    const box = document.getElementById('rates-chart');
-    const st = dash.data('policy_rates');
-    if (st.status === 'error') return failBox(box);
-    if (st.status !== 'ok') { box.innerHTML = ''; box.classList.add('dash-skeleton'); return; }
-    box.classList.remove('dash-skeleton');
-    const rows = st.data.map(d => ({ x: new Date(d.date), ecb: Number(d.ecb_deposit_rate), boe: Number(d.boe_bank_rate) }));
-    lineChart(box, {
-      time: true, step: true, xDomain: [rows[0].x, rows[rows.length - 1].x], ref: 0,
-      yFmt: v => minus(d3.format('.2~f')(v) + '%'),
-      series: [
-        { name: 'BoE', color: dash.colors[1], values: rows.map(r => ({ x: r.x, y: r.boe })) },
-        { name: 'ECB', color: dash.colors[0], values: rows.map(r => ({ x: r.x, y: r.ecb })) }
-      ]
-    });
+  // ---------- Modal with brush ----------
+  let mKey = null, mFrom = null, mTo = null, lastFocus = null, mFocus = null;
+  function openModal(key, focus) {
+    mFocus = focus || null;
+    mKey = key; mFrom = state.from; mTo = state.to; lastFocus = document.activeElement;
+    const d = DEFS[key];
+    $('#m-title').textContent = d.title; $('#m-note').textContent = d.note;
+    const lg = $('#m-legend'); lg.innerHTML = '';
+    d.legend.forEach(([c, t]) => { const s = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = `var(${c})`; s.append(sw, document.createTextNode(t)); lg.appendChild(s); });
+    $('#modal').hidden = false; document.body.style.overflow = 'hidden';
+    drawBrush();
+    setModalRange(mFrom, mTo, $$('#quick [data-q]').map(b => b.getAttribute('aria-pressed') === 'true' ? b.dataset.q : null).find(Boolean) || null, true);
+    $('#m-close').focus();
   }
-
-  function bankSeries(rows, field) {
-    const banks = [...new Set(rows.map(d => d.bank))];
-    return banks.map(b => {
-      const s = rows.filter(d => d.bank === b);
-      return { name: b, color: col(s[0].country), values: s.map(d => ({ x: Number(d.year), y: d[field] === '' || d[field] == null ? null : Number(d[field]) })) };
-    }).filter(s => s.values.some(v => v.y != null && !isNaN(v.y)));
+  function closeModal() { moveBrush = null; $('#modal').hidden = true; document.body.style.overflow = ''; mKey = null; if (lastFocus) lastFocus.focus(); }
+  $('#m-close').addEventListener('click', closeModal);
+  $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && mKey) closeModal(); });
+  function modalHeight() { return Math.max(300, Math.min(window.innerHeight * 0.58, 620)); }
+  let moveBrush = null;
+  function setModalRange(f, t, q, fromPicker) {
+    mFrom = f; mTo = t;
+    $('#m-from-m').value = f.getUTCMonth(); $('#m-from-y').value = f.getUTCFullYear();
+    $('#m-to-m').value = t.getUTCMonth(); $('#m-to-y').value = t.getUTCFullYear();
+    $$('[data-mq]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mq === q ? 'true' : 'false'));
+    drawModal();
+    if (fromPicker && moveBrush) moveBrush();
   }
-
-  function drawBankChart(id, src, field, fmt, extra) {
-    const box = document.getElementById(id);
-    const st = dash.data(src);
-    if (st.status === 'error') return failBox(box);
-    if (st.status !== 'ok') { box.innerHTML = ''; box.classList.add('dash-skeleton'); return; }
-    box.classList.remove('dash-skeleton');
-    lineChart(box, Object.assign({ height: 340, xDomain: [2021, d3.max(st.data, d => Number(d.year))], yFmt: fmt, series: bankSeries(st.data, field) }, extra || {}));
+  function drawModal() {
+    if (!mKey) return;
+    render($('#m-chart'), mKey, mFrom, mTo, modalHeight(), mFocus);
+    $('#m-range').textContent = mKey === 'rates' ? `${monthYear(mFrom)} – ${monthYear(mTo)}` : `${mFrom.getUTCFullYear()} – ${Math.min(mTo.getUTCFullYear(), d3.max(BANKS, d => d.year))}`;
   }
+  function drawBrush() {
+    const box = $('#m-brush'); box.innerHTML = '';
+    const W = Math.max(280, box.clientWidth), H = 64, m = { l: 8, r: 8 };
+    const full = mKey === 'rates'
+      ? { from: RATES[0].date, to: new Date(Math.max(+RATES[RATES.length - 1].date, +today)) }
+      : { from: new Date(Date.UTC(d3.min(BANKS, d => d.year), 0, 1)), to: new Date(Date.UTC(d3.max(BANKS, d => d.year), 11, 31)) };
+    const series = seriesFor(mKey, full.from, full.to);
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H).attr('class', 'brush');
+    const x = d3.scaleUtc([full.from, full.to], [m.l, W - m.r]);
+    const all = series.flatMap(s => s.values.filter(v => v.y != null));
+    const y = d3.scaleLinear(d3.extent(all, d => d.y), [H - 18, 4]);
+    const toDate = v => v instanceof Date ? v : new Date(Date.UTC(v, 6, 1));
+    const line = d3.line().defined(d => d.y != null).x(d => x(toDate(d.x))).y(d => y(d.y));
+    if (mKey === 'rates') line.curve(d3.curveStepAfter);
+    series.forEach(s => svg.append('path').attr('d', line(s.values)).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 1).attr('opacity', .6));
+    svg.append('g').selectAll('text').data(x.ticks(Math.floor(W / 80))).join('text').attr('x', d => x(d)).attr('y', H - 3).attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', css('--muted')).text(d3.utcFormat('%Y'));
+    const brush = d3.brushX().extent([[m.l, 0], [W - m.r, H - 16]])
+      .on('brush end', ev => {
+        if (!ev.sourceEvent) return;
+        if (!ev.selection) { if (ev.type === 'end') moveBrush(); return; }
+        let [a, b] = ev.selection.map(x.invert);
+        if (mKey !== 'rates') { a = new Date(Date.UTC(a.getUTCFullYear(), 0, 1)); b = new Date(Date.UTC(b.getUTCFullYear(), 11, 31)); }
+        else { a = startOfMonth(a.getUTCFullYear(), a.getUTCMonth()); b = endOfMonth(b.getUTCFullYear(), b.getUTCMonth()); }
+        setModalRange(a, b, null, false);
+      });
+    const clamp = d => new Date(Math.min(Math.max(+d, +full.from), +full.to));
+    const gb = svg.append('g').call(brush);
+    moveBrush = () => gb.call(brush.move, [x(clamp(mFrom)), x(clamp(mTo))]);
+    moveBrush();
+  }
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { drawCharts(); if (mKey) { drawModal(); drawBrush(); } }, 150); });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { drawCharts(); if (mKey) { drawModal(); drawBrush(); } });
 
-  const nf = d3.format(',');
-  const numCols = ['year', 'net_interest_income_m', 'net_interest_margin_pct', 'return_on_equity_pct', 'net_profit_m'];
+  // ---------- Table ----------
   let sortKey = null, sortDir = 1;
+  const numCols = ['year', 'net_interest_income_m', 'net_interest_margin_pct', 'return_on_equity_pct', 'net_profit_m'];
   function drawTable() {
-    const t = document.getElementById('data-table');
-    const tb = t.querySelector('tbody');
-    const st = dash.data('bank_results');
-    tb.innerHTML = '';
-    if (st.status !== 'ok') return;
-    let rows = st.data.slice();
+    const tb = $('#tbl tbody'); tb.innerHTML = '';
+    const q = $('#q').value.trim().toLowerCase(), c = $('#country').value;
+    let rows = BANKS.filter(r => (!c || r.country === c) && (!q || Object.values(r).join(' ').toLowerCase().includes(q)));
     if (sortKey) {
       const isNum = numCols.includes(sortKey);
-      rows.sort((a, b) => {
-        const av = isNum ? (a[sortKey] === '' ? -Infinity : Number(a[sortKey])) : String(a[sortKey]);
-        const bv = isNum ? (b[sortKey] === '' ? -Infinity : Number(b[sortKey])) : String(b[sortKey]);
+      rows = rows.slice().sort((a, b) => {
+        const av = isNum ? (a[sortKey] === '' ? -Infinity : +a[sortKey]) : String(a[sortKey]);
+        const bv = isNum ? (b[sortKey] === '' ? -Infinity : +b[sortKey]) : String(b[sortKey]);
         return (av > bv ? 1 : av < bv ? -1 : 0) * sortDir;
       });
     }
+    const nf = d3.format(',');
     rows.forEach(r => {
       const tr = document.createElement('tr');
       const cells = [
-        [r.bank], [r.country], [r.year, 1], [r.currency],
-        [r.net_interest_income_m === '' ? '—' : nf(Number(r.net_interest_income_m)), 1],
-        [r.net_interest_margin_pct === '' ? '—' : Number(r.net_interest_margin_pct).toFixed(2) + '%', 1],
-        [Number(r.return_on_equity_pct).toFixed(1) + '%', 1], [r.return_measure],
-        [nf(Number(r.net_profit_m)), 1], [r.profit_basis]
+        [r.bank], [r.country], [r.year, 'n'], [r.currency],
+        [r.nii == null ? '—' : nf(r.nii), 'n'],
+        [r.nim == null ? '—' : r.nim.toFixed(2) + '%', 'n'],
+        [r.roe == null ? '—' : minus(r.roe.toFixed(1)) + '%', 'n' + (r.roe < 0 ? ' neg' : '')],
+        [r.return_measure || '—'],
+        [r.profit == null ? '—' : minus(nf(r.profit)), 'n' + (r.profit < 0 ? ' neg' : '')],
+        [r.profit_basis || '—']
       ];
-      cells.forEach(([v, n]) => { const td = document.createElement('td'); td.textContent = v; if (n) td.className = 'num'; tr.appendChild(td); });
+      cells.forEach(([v, cls]) => { const td = document.createElement('td'); td.textContent = v; if (cls) td.className = cls; tr.appendChild(td); });
       tb.appendChild(tr);
     });
-    t.querySelectorAll('th').forEach(th => {
-      const k = th.querySelector('button') && th.querySelector('button').dataset.k;
-      th.setAttribute('aria-sort', k === sortKey ? (sortDir > 0 ? 'ascending' : 'descending') : 'none');
-    });
+    $$('#tbl th').forEach(th => { const k = th.querySelector('button').dataset.k; th.setAttribute('aria-sort', k === sortKey ? (sortDir > 0 ? 'ascending' : 'descending') : 'none'); });
   }
-  document.querySelectorAll('#data-table th button').forEach(b => b.addEventListener('click', () => {
-    const k = b.dataset.k;
-    if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = numCols.includes(k) ? -1 : 1; }
-    drawTable();
-  }));
+  $$('#tbl th button').forEach(b => b.addEventListener('click', () => { const k = b.dataset.k; if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = numCols.includes(k) ? -1 : 1; } drawTable(); }));
+  $('#q').addEventListener('input', drawTable);
+  $('#country').addEventListener('change', drawTable);
 
   function drawSources() {
-    const tb = document.querySelector('#sources-table tbody');
-    const st = dash.data('sources');
-    tb.innerHTML = '';
-    if (st.status !== 'ok') return;
-    st.data.forEach(r => {
+    const tb = $('#src tbody'); tb.innerHTML = '';
+    SOURCES.forEach(r => {
       const tr = document.createElement('tr');
       const a = document.createElement('td'); a.textContent = r.source;
       const c = document.createElement('td'); c.textContent = r.covers;
       const l = document.createElement('td');
-      if (/^https:\/\//.test(r.url)) { const link = document.createElement('a'); link.href = r.url; link.target = '_blank'; link.rel = 'noopener'; link.textContent = r.url; l.appendChild(link); }
-      else l.textContent = r.url;
+      if (/^https:\/\//.test(r.url)) { const link = document.createElement('a'); link.href = r.url; link.target = '_blank'; link.rel = 'noopener'; link.textContent = r.url; l.appendChild(link); } else l.textContent = r.url;
       tr.append(a, c, l); tb.appendChild(tr);
     });
   }
-
-  function fillLatest() {
-    const st = dash.data('bank_results');
-    if (st.status !== 'ok') return;
-    const ly = String(d3.max(st.data, d => Number(d.year)));
-    root.querySelectorAll('.rb-latest').forEach(el => { el.textContent = ly; });
-  }
-  fetch('data/meta.json?v=' + Date.now()).then(r => r.ok ? r.json() : null).then(m => {
-    const el = document.getElementById('rates-checked');
-    if (!m || !m.rates_checked_at) return;
-    const f = d3.utcFormat('%-d %b %Y, %H:%M UTC');
-    el.textContent = 'Rates last checked ' + f(new Date(m.rates_checked_at)) + (m.rates_status === 'ok' ? '' : ' (latest check failed; showing last good data)');
-  }).catch(() => {});
-
-  dash.onData(() => {
-    fillLatest();
-    fillMarks();
-    drawRates();
-    drawBankChart('nii-chart', 'nii_index', 'index', v => d3.format('.0f')(v), { ref: 100 });
-    drawBankChart('roe-chart', 'bank_results', 'return_on_equity_pct', v => d3.format('.1f')(v) + '%');
-    drawBankChart('nim-chart', 'bank_results', 'net_interest_margin_pct', v => d3.format('.2f')(v) + '%');
-    drawTable();
-    drawSources();
-  });
 })();
 </script>
-
-</main>
 </body>
 </html>
