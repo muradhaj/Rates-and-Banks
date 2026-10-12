@@ -18,18 +18,18 @@ import urllib.request
 from datetime import date, datetime, timezone
 from pathlib import Path
 
-START = date(2010, 1, 1)
+START = date(2015, 1, 1)
 ROOT = Path(__file__).resolve().parent.parent
 RATES_FILE = ROOT / "data" / "policy_rates.csv"
 META_FILE = ROOT / "data" / "meta.json"
 
 ECB_URL = (
     "https://data-api.ecb.europa.eu/service/data/FM/D.U2.EUR.4F.KR.DFR.LEV"
-    "?format=csvdata&startPeriod=2008-01-01"
+    "?format=csvdata&startPeriod=2014-01-01"
 )
 BOE_URL = (
     "https://www.bankofengland.co.uk/boeapps/database/_iadb-fromshowcolumns.asp"
-    "?csv.x=yes&Datefrom=01/Jan/2008&Dateto=now&SeriesCodes=IUDBEDR"
+    "?csv.x=yes&Datefrom=01/Jan/2014&Dateto=now&SeriesCodes=IUDBEDR"
     "&CSVF=TN&UsingCodes=Y&VPD=Y&VFD=N"
 )
 HEADERS = {
