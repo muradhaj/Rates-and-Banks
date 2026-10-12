@@ -1,8 +1,8 @@
 # Rates & Banks: NL vs UK
 
-A website that compares how ECB and Bank of England interest rate changes affected eight Dutch and UK banks. Central bank rates go back to 2010; bank results go back to 2015.
+A website that compares how ECB and Bank of England interest rate changes affected eight Dutch and UK banks. Everything starts in 2015: central bank rates from January 2015 (updated daily) and bank results from the 2015 financial year.
 
-The site has five tabs: Overview & findings, Charts (pick any month range; click a chart to open it full screen and zoom with the slider), Bank figures, Method & caveats, and Sources.
+The site has five tabs: Overview & findings, Charts (pick any month range; click a chart to open it full screen, then filter by country, pick dates or zoom with the slider), Bank figures, Method & caveats, and Sources.
 
 - **Central bank rates update by themselves every day.** A free GitHub Action downloads the latest rates from the ECB and Bank of England data feeds and republishes the site.
 - **Bank figures are updated by hand,** because banks publish them as press releases and PDFs. That takes about 10 minutes, 1–2 times a year (see below).
