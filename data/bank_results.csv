@@ -1,87 +1,95 @@
-bank,country,year,currency,net_interest_income_m,return_on_equity_pct,return_measure,net_interest_margin_pct,net_profit_m,profit_basis
-ING,Netherlands,2015,EUR,12590,8.6,ROE (underlying),1.46,4010,Net result
-ING,Netherlands,2016,EUR,13241,10.1,ROE (underlying),1.52,4651,Net result
-ING,Netherlands,2017,EUR,13714,10.2,ROE (underlying),1.54,4905,Net result
-ING,Netherlands,2018,EUR,13916,11.2,ROE (underlying),1.53,4703,Net result
-ING,Netherlands,2019,EUR,14079,9.4,ROE,1.54,4781,Net result
-ING,Netherlands,2020,EUR,13604,4.8,ROE,1.44,2485,Net result
-ING,Netherlands,2021,EUR,13614,9.2,ROE,1.39,4776,Net result
-ING,Netherlands,2022,EUR,13756,7.2,ROE,1.34,3674,Net result
-ING,Netherlands,2023,EUR,15976,14.8,ROE,1.56,7287,Net result
-ING,Netherlands,2024,EUR,15023,13.0,ROE,1.45,6392,Net result
-ING,Netherlands,2025,EUR,14681,13.2,ROE,1.36,6327,Net result
-ABN AMRO,Netherlands,2016,EUR,,,,,1806,Profit for the period
-ABN AMRO,Netherlands,2017,EUR,6456,14.5,ROE,1.57,2791,Profit for the period
-ABN AMRO,Netherlands,2018,EUR,6593,11.4,ROE,1.65,2325,Profit for the period
-ABN AMRO,Netherlands,2019,EUR,6468,10.0,ROE,1.64,2046,Profit for the period
-ABN AMRO,Netherlands,2020,EUR,5863,-0.8,ROE,1.43,-45,Profit for the period
-ABN AMRO,Netherlands,2021,EUR,5210,5.8,ROE,1.27,1234,Profit for the period
-ABN AMRO,Netherlands,2022,EUR,5422,8.7,ROE,1.29,1867,Profit for the period
-ABN AMRO,Netherlands,2023,EUR,6278,12.2,ROE,,2697,Profit for the period
-ABN AMRO,Netherlands,2024,EUR,6504,10.1,ROE,1.64,2403,Profit for the period
-ABN AMRO,Netherlands,2025,EUR,6335,8.7,ROE,1.52,2252,Profit for the period
-Rabobank,Netherlands,2015,EUR,9139,,,1.33,2214,Net profit
-Rabobank,Netherlands,2016,EUR,8743,,,1.29,2024,Net profit
-Rabobank,Netherlands,2018,EUR,,7.3,ROE,,,
-Rabobank,Netherlands,2019,EUR,,5.3,ROE,,,
-Rabobank,Netherlands,2020,EUR,,2.7,ROE,,1096,Net profit
-Rabobank,Netherlands,2021,EUR,8351,8.8,ROE,,3692,Net profit
-Rabobank,Netherlands,2022,EUR,9147,6.2,ROE,,2786,Net profit
-Rabobank,Netherlands,2023,EUR,11712,9.1,ROE,,4377,Net profit
-Rabobank,Netherlands,2024,EUR,12061,10.0,ROE,,5163,Net profit
-Rabobank,Netherlands,2025,EUR,12001,9.1,ROE,,4957,Net profit
-de Volksbank,Netherlands,2015,EUR,994,11.1,ROE,1.52,348,Net profit
-de Volksbank,Netherlands,2016,EUR,938,10.1,ROE,1.48,349,Net profit
-de Volksbank,Netherlands,2017,EUR,924,9.1,ROE,1.50,329,Net profit
-de Volksbank,Netherlands,2018,EUR,908,7.6,ROE,1.47,268,Net profit
-de Volksbank,Netherlands,2019,EUR,875,7.7,ROE,1.37,275,Net profit
-de Volksbank,Netherlands,2020,EUR,850,5.1,ROE,1.30,174,Net profit
-de Volksbank,Netherlands,2021,EUR,775,4.7,ROE,1.11,162,Net profit
-de Volksbank,Netherlands,2022,EUR,851,5.2,ROE,1.15,191,Net profit
-de Volksbank,Netherlands,2023,EUR,1303,11.4,ROE,1.80,431,Net profit
-de Volksbank,Netherlands,2024,EUR,1127,3.2,ROE,1.57,144,Net profit
-de Volksbank,Netherlands,2025,EUR,1122,6.3,ROE,1.50,268,Net profit
-Lloyds,United Kingdom,2015,GBP,11482,,,2.63,956,Statutory profit after tax
-Lloyds,United Kingdom,2016,GBP,11435,6.6,RoTE,2.71,2514,Statutory profit after tax
-Lloyds,United Kingdom,2017,GBP,12320,8.9,RoTE,2.86,3547,Statutory profit after tax
-Lloyds,United Kingdom,2018,GBP,12714,11.7,RoTE,2.93,4400,Statutory profit after tax
-Lloyds,United Kingdom,2019,GBP,12377,6.6,RoTE,2.88,3006,Statutory profit after tax
-Lloyds,United Kingdom,2020,GBP,10773,2.3,RoTE,2.52,1387,Statutory profit after tax
-Lloyds,United Kingdom,2021,GBP,11163,13.8,RoTE,2.54,5885,Statutory profit after tax
-Lloyds,United Kingdom,2022,GBP,13172,9.8,RoTE,2.94,3923,Statutory profit after tax
-Lloyds,United Kingdom,2023,GBP,13765,15.8,RoTE,3.11,5518,Statutory profit after tax
-Lloyds,United Kingdom,2024,GBP,12845,12.3,RoTE,2.95,4477,Statutory profit after tax
-Lloyds,United Kingdom,2025,GBP,13635,12.9,RoTE,3.06,4757,Statutory profit after tax
-NatWest,United Kingdom,2015,GBP,8767,-4.7,RoTE,2.12,-1979,Attributable to ordinary shareholders
-NatWest,United Kingdom,2016,GBP,8708,-17.9,RoTE,2.18,-6955,Attributable to ordinary shareholders
-NatWest,United Kingdom,2017,GBP,8987,2.2,RoTE,2.13,752,Attributable to ordinary shareholders
-NatWest,United Kingdom,2018,GBP,8656,4.8,RoTE,1.98,1622,Attributable to ordinary shareholders
-NatWest,United Kingdom,2019,GBP,8047,9.4,RoTE,1.99,3133,Attributable to ordinary shareholders
-NatWest,United Kingdom,2020,GBP,7749,-2.4,RoTE,1.71,-753,Attributable to ordinary shareholders
-NatWest,United Kingdom,2021,GBP,7614,9.4,RoTE,2.39,2950,Attributable to ordinary shareholders
-NatWest,United Kingdom,2022,GBP,9842,12.3,RoTE,2.85,3340,Attributable to ordinary shareholders
-NatWest,United Kingdom,2023,GBP,11049,17.8,RoTE,3.04,4394,Attributable to ordinary shareholders
-NatWest,United Kingdom,2024,GBP,11275,17.5,RoTE,2.13,4519,Attributable to ordinary shareholders
-NatWest,United Kingdom,2025,GBP,12829,19.2,RoTE,2.34,5479,Attributable to ordinary shareholders
-Barclays,United Kingdom,2015,GBP,,,,,-394,Attributable profit
-Barclays,United Kingdom,2016,GBP,10537,3.6,RoTE,,1623,Attributable profit
-Barclays,United Kingdom,2017,GBP,9845,-3.6,RoTE,,-1922,Attributable profit
-Barclays,United Kingdom,2018,GBP,9062,3.6,RoTE,,1394,Attributable profit
-Barclays,United Kingdom,2019,GBP,9407,5.3,RoTE,,2461,Attributable profit
-Barclays,United Kingdom,2020,GBP,8122,3.2,RoTE,,1526,Attributable profit
-Barclays,United Kingdom,2021,GBP,8073,13.4,RoTE,,6375,Attributable profit
-Barclays,United Kingdom,2022,GBP,10572,10.4,RoTE,,5023,Attributable profit
-Barclays,United Kingdom,2023,GBP,12709,9.0,RoTE,,4274,Attributable profit
-Barclays,United Kingdom,2024,GBP,12936,10.5,RoTE,,5316,Attributable profit
-Barclays,United Kingdom,2025,GBP,14501,11.3,RoTE,,6175,Attributable profit
-Santander UK,United Kingdom,2015,GBP,3575,8.2,RoTE,1.83,962,Profit after tax
-Santander UK,United Kingdom,2016,GBP,3582,10.9,RoTE,1.79,1317,Profit after tax
-Santander UK,United Kingdom,2017,GBP,3803,10.2,RoTE,1.90,1254,Profit after tax
-Santander UK,United Kingdom,2018,GBP,3606,9.0,RoTE,1.80,1121,Profit after tax
-Santander UK,United Kingdom,2019,GBP,3295,7.8,RoTE (adjusted),1.64,709,Profit after tax
-Santander UK,United Kingdom,2020,GBP,3437,4.3,RoTE (adjusted),1.65,438,Profit after tax
-Santander UK,United Kingdom,2021,GBP,3997,13.2,RoTE (adjusted),1.92,1405,Profit after tax
-Santander UK,United Kingdom,2022,GBP,4472,14.1,RoTE (adjusted),2.06,1423,Profit after tax
-Santander UK,United Kingdom,2023,GBP,4667,14.4,RoTE,2.20,1596,Profit after tax
-Santander UK,United Kingdom,2024,GBP,4326,8.8,RoTE,2.14,950,Profit after tax
-Santander UK,United Kingdom,2025,GBP,4423,10.0,RoTE,2.23,1115,Profit after tax
+bank,country,year,period,currency,net_interest_income_m,return_on_equity_pct,return_measure,net_interest_margin_pct,net_profit_m,profit_basis
+ING,Netherlands,2015,FY,EUR,12590,8.6,ROE (underlying),1.46,4010,Net result
+ING,Netherlands,2016,FY,EUR,13241,10.1,ROE (underlying),1.52,4651,Net result
+ING,Netherlands,2017,FY,EUR,13714,10.2,ROE (underlying),1.54,4905,Net result
+ING,Netherlands,2018,FY,EUR,13916,11.2,ROE (underlying),1.53,4703,Net result
+ING,Netherlands,2019,FY,EUR,14079,9.4,ROE,1.54,4781,Net result
+ING,Netherlands,2020,FY,EUR,13604,4.8,ROE,1.44,2485,Net result
+ING,Netherlands,2021,FY,EUR,13614,9.2,ROE,1.39,4776,Net result
+ING,Netherlands,2022,FY,EUR,13756,7.2,ROE,1.34,3674,Net result
+ING,Netherlands,2023,FY,EUR,15976,14.8,ROE,1.56,7287,Net result
+ING,Netherlands,2024,FY,EUR,15023,13.0,ROE,1.45,6392,Net result
+ING,Netherlands,2025,FY,EUR,14681,13.2,ROE,1.36,6327,Net result
+ING,Netherlands,2026,H1,EUR,8181,15.3,RoTE (ING switched in 2026),1.45,3503,Net result
+ABN AMRO,Netherlands,2016,FY,EUR,,,,,1806,Profit for the period
+ABN AMRO,Netherlands,2017,FY,EUR,6456,14.5,ROE,1.57,2791,Profit for the period
+ABN AMRO,Netherlands,2018,FY,EUR,6593,11.4,ROE,1.65,2325,Profit for the period
+ABN AMRO,Netherlands,2019,FY,EUR,6468,10.0,ROE,1.64,2046,Profit for the period
+ABN AMRO,Netherlands,2020,FY,EUR,5863,-0.8,ROE,1.43,-45,Profit for the period
+ABN AMRO,Netherlands,2021,FY,EUR,5210,5.8,ROE,1.27,1234,Profit for the period
+ABN AMRO,Netherlands,2022,FY,EUR,5422,8.7,ROE,1.29,1867,Profit for the period
+ABN AMRO,Netherlands,2023,FY,EUR,6278,12.2,ROE,,2697,Profit for the period
+ABN AMRO,Netherlands,2024,FY,EUR,6504,10.1,ROE,1.64,2403,Profit for the period
+ABN AMRO,Netherlands,2025,FY,EUR,6335,8.7,ROE,1.52,2252,Profit for the period
+ABN AMRO,Netherlands,2026,H1,EUR,3337,11.4,ROE,1.49,1473,Profit for the period
+Rabobank,Netherlands,2015,FY,EUR,9139,,,1.33,2214,Net profit
+Rabobank,Netherlands,2016,FY,EUR,8743,,,1.29,2024,Net profit
+Rabobank,Netherlands,2018,FY,EUR,,7.3,ROE,,,
+Rabobank,Netherlands,2019,FY,EUR,,5.3,ROE,,,
+Rabobank,Netherlands,2020,FY,EUR,,2.7,ROE,,1096,Net profit
+Rabobank,Netherlands,2021,FY,EUR,8351,8.8,ROE,,3692,Net profit
+Rabobank,Netherlands,2022,FY,EUR,9147,6.2,ROE,,2786,Net profit
+Rabobank,Netherlands,2023,FY,EUR,11712,9.1,ROE,,4377,Net profit
+Rabobank,Netherlands,2024,FY,EUR,12061,10.0,ROE,,5163,Net profit
+Rabobank,Netherlands,2025,FY,EUR,12001,9.1,ROE,,4957,Net profit
+Rabobank,Netherlands,2026,H1,EUR,,9.5,ROE,,2694,Net profit
+de Volksbank,Netherlands,2015,FY,EUR,994,11.1,ROE,1.52,348,Net profit
+de Volksbank,Netherlands,2016,FY,EUR,938,10.1,ROE,1.48,349,Net profit
+de Volksbank,Netherlands,2017,FY,EUR,924,9.1,ROE,1.50,329,Net profit
+de Volksbank,Netherlands,2018,FY,EUR,908,7.6,ROE,1.47,268,Net profit
+de Volksbank,Netherlands,2019,FY,EUR,875,7.7,ROE,1.37,275,Net profit
+de Volksbank,Netherlands,2020,FY,EUR,850,5.1,ROE,1.30,174,Net profit
+de Volksbank,Netherlands,2021,FY,EUR,775,4.7,ROE,1.11,162,Net profit
+de Volksbank,Netherlands,2022,FY,EUR,851,5.2,ROE,1.15,191,Net profit
+de Volksbank,Netherlands,2023,FY,EUR,1303,11.4,ROE,1.80,431,Net profit
+de Volksbank,Netherlands,2024,FY,EUR,1127,3.2,ROE,1.57,144,Net profit
+de Volksbank,Netherlands,2025,FY,EUR,1122,6.3,ROE,1.50,268,Net profit
+de Volksbank,Netherlands,2026,H1,EUR,587,8.1,ROE,1.52,174,Net profit
+Lloyds,United Kingdom,2015,FY,GBP,11482,,,2.63,956,Statutory profit after tax
+Lloyds,United Kingdom,2016,FY,GBP,11435,6.6,RoTE,2.71,2514,Statutory profit after tax
+Lloyds,United Kingdom,2017,FY,GBP,12320,8.9,RoTE,2.86,3547,Statutory profit after tax
+Lloyds,United Kingdom,2018,FY,GBP,12714,11.7,RoTE,2.93,4400,Statutory profit after tax
+Lloyds,United Kingdom,2019,FY,GBP,12377,6.6,RoTE,2.88,3006,Statutory profit after tax
+Lloyds,United Kingdom,2020,FY,GBP,10773,2.3,RoTE,2.52,1387,Statutory profit after tax
+Lloyds,United Kingdom,2021,FY,GBP,11163,13.8,RoTE,2.54,5885,Statutory profit after tax
+Lloyds,United Kingdom,2022,FY,GBP,13172,9.8,RoTE,2.94,3923,Statutory profit after tax
+Lloyds,United Kingdom,2023,FY,GBP,13765,15.8,RoTE,3.11,5518,Statutory profit after tax
+Lloyds,United Kingdom,2024,FY,GBP,12845,12.3,RoTE,2.95,4477,Statutory profit after tax
+Lloyds,United Kingdom,2025,FY,GBP,13635,12.9,RoTE,3.06,4757,Statutory profit after tax
+Lloyds,United Kingdom,2026,H1,GBP,7278,17.1,RoTE,3.19,3123,Statutory profit after tax
+NatWest,United Kingdom,2015,FY,GBP,8767,-4.7,RoTE,2.12,-1979,Attributable to ordinary shareholders
+NatWest,United Kingdom,2016,FY,GBP,8708,-17.9,RoTE,2.18,-6955,Attributable to ordinary shareholders
+NatWest,United Kingdom,2017,FY,GBP,8987,2.2,RoTE,2.13,752,Attributable to ordinary shareholders
+NatWest,United Kingdom,2018,FY,GBP,8656,4.8,RoTE,1.98,1622,Attributable to ordinary shareholders
+NatWest,United Kingdom,2019,FY,GBP,8047,9.4,RoTE,1.99,3133,Attributable to ordinary shareholders
+NatWest,United Kingdom,2020,FY,GBP,7749,-2.4,RoTE,1.71,-753,Attributable to ordinary shareholders
+NatWest,United Kingdom,2021,FY,GBP,7614,9.4,RoTE,2.39,2950,Attributable to ordinary shareholders
+NatWest,United Kingdom,2022,FY,GBP,9842,12.3,RoTE,2.85,3340,Attributable to ordinary shareholders
+NatWest,United Kingdom,2023,FY,GBP,11049,17.8,RoTE,3.04,4394,Attributable to ordinary shareholders
+NatWest,United Kingdom,2024,FY,GBP,11275,17.5,RoTE,2.13,4519,Attributable to ordinary shareholders
+NatWest,United Kingdom,2025,FY,GBP,12829,19.2,RoTE,2.34,5479,Attributable to ordinary shareholders
+NatWest,United Kingdom,2026,H1,GBP,6890,19.7,RoTE,2.48,3035,Attributable to ordinary shareholders
+Barclays,United Kingdom,2015,FY,GBP,,,,,-394,Attributable profit
+Barclays,United Kingdom,2016,FY,GBP,10537,3.6,RoTE,,1623,Attributable profit
+Barclays,United Kingdom,2017,FY,GBP,9845,-3.6,RoTE,,-1922,Attributable profit
+Barclays,United Kingdom,2018,FY,GBP,9062,3.6,RoTE,,1394,Attributable profit
+Barclays,United Kingdom,2019,FY,GBP,9407,5.3,RoTE,,2461,Attributable profit
+Barclays,United Kingdom,2020,FY,GBP,8122,3.2,RoTE,,1526,Attributable profit
+Barclays,United Kingdom,2021,FY,GBP,8073,13.4,RoTE,,6375,Attributable profit
+Barclays,United Kingdom,2022,FY,GBP,10572,10.4,RoTE,,5023,Attributable profit
+Barclays,United Kingdom,2023,FY,GBP,12709,9.0,RoTE,,4274,Attributable profit
+Barclays,United Kingdom,2024,FY,GBP,12936,10.5,RoTE,,5316,Attributable profit
+Barclays,United Kingdom,2025,FY,GBP,14501,11.3,RoTE,,6175,Attributable profit
+Barclays,United Kingdom,2026,H1,GBP,,14.8,RoTE,,4190,Attributable profit
+Santander UK,United Kingdom,2015,FY,GBP,3575,8.2,RoTE,1.83,962,Profit after tax
+Santander UK,United Kingdom,2016,FY,GBP,3582,10.9,RoTE,1.79,1317,Profit after tax
+Santander UK,United Kingdom,2017,FY,GBP,3803,10.2,RoTE,1.90,1254,Profit after tax
+Santander UK,United Kingdom,2018,FY,GBP,3606,9.0,RoTE,1.80,1121,Profit after tax
+Santander UK,United Kingdom,2019,FY,GBP,3295,7.8,RoTE (adjusted),1.64,709,Profit after tax
+Santander UK,United Kingdom,2020,FY,GBP,3437,4.3,RoTE (adjusted),1.65,438,Profit after tax
+Santander UK,United Kingdom,2021,FY,GBP,3997,13.2,RoTE (adjusted),1.92,1405,Profit after tax
+Santander UK,United Kingdom,2022,FY,GBP,4472,14.1,RoTE (adjusted),2.06,1423,Profit after tax
+Santander UK,United Kingdom,2023,FY,GBP,4667,14.4,RoTE,2.20,1596,Profit after tax
+Santander UK,United Kingdom,2024,FY,GBP,4326,8.8,RoTE,2.14,950,Profit after tax
+Santander UK,United Kingdom,2025,FY,GBP,4423,10.0,RoTE,2.23,1115,Profit after tax
+Santander UK,United Kingdom,2026,H1,GBP,2392,9.1,RoTE,2.25,385,Profit after tax
