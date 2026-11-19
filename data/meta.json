@@ -1,5 +1,5 @@
 {
-  "rates_checked_at": "2026-11-18T15:37:42Z",
-  "rates_status": "ok",
+  "rates_checked_at": "2026-11-19T15:43:24Z",
+  "rates_status": "failed: The read operation timed out",
   "rates_updated_at": "2026-11-18T15:37:42Z"
 }
